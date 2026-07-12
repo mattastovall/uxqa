@@ -137,8 +137,9 @@ describe("BrowserChrome", () => {
     const css = readFileSync(join(process.cwd(), "src/styles.css"), "utf8");
 
     expect(css).toContain("background: rgb(35 39 47 / 22%)");
-    expect(css).toContain("height: 97px;\n  background: #000;");
-    expect(css).toContain('.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="collapsed"]::before { height: 57px; }');
+    expect(css).toContain("height: 192px");
+    expect(css).toContain("background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%) 72%, #000)");
+    expect(css).not.toContain('.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="collapsed"]::before');
     expect(css).toContain('.uxqa-screen[data-glass-refraction="fallback"] .uxqa-ios26-address');
     expect(css).toContain("backdrop-filter: blur(12px) saturate(145%) brightness(1.04)");
     expect(css).toContain("transition: height 420ms cubic-bezier(.22, 1, .36, 1)");
