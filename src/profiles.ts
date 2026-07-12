@@ -63,22 +63,15 @@ export const DEFAULT_SELECTION: SimulatorSelection = { deviceId: "iphone-16", br
 
 const BUILT_INS: SimulatorProfiles = { devices: BUILT_IN_DEVICES, browsers: BUILT_IN_BROWSERS };
 
-function firstDevice(profiles: SimulatorProfiles): DeviceProfile {
-  const device = profiles.devices[0] ?? BUILT_IN_DEVICES[0];
-  if (!device) throw new Error("uxqa requires at least one device profile");
-  return device;
-}
-
-function firstBrowser(profiles: SimulatorProfiles): BrowserProfile {
-  const browser = profiles.browsers[0] ?? BUILT_IN_BROWSERS[0];
-  if (!browser) throw new Error("uxqa requires at least one browser profile");
-  return browser;
-}
-
 export function resolveSimulatorSelection(input: Partial<SimulatorSelection>, profiles: SimulatorProfiles = BUILT_INS): ResolvedSimulatorProfile {
-  const device = profiles.devices.find((candidate) => candidate.id === input.deviceId) ?? profiles.devices.find((candidate) => candidate.id === DEFAULT_SELECTION.deviceId) ?? firstDevice(profiles);
-  const compatible = profiles.browsers.filter((candidate) => candidate.deviceId === device.id);
-  const browser = compatible.find((candidate) => candidate.browserId === input.browserId) ?? compatible.find((candidate) => candidate.browserId === device.defaultBrowserId) ?? firstBrowser(profiles);
+  const requestedDevice = profiles.devices.find((candidate) => candidate.id === input.deviceId) ?? profiles.devices.find((candidate) => candidate.id === DEFAULT_SELECTION.deviceId);
+  const requestedCompatible = requestedDevice ? profiles.browsers.filter((candidate) => candidate.deviceId === requestedDevice.id) : [];
+  const defaultDevice = BUILT_IN_DEVICES.find((candidate) => candidate.id === DEFAULT_SELECTION.deviceId);
+  const defaultBrowser = BUILT_IN_BROWSERS.find((candidate) => candidate.deviceId === DEFAULT_SELECTION.deviceId && candidate.browserId === DEFAULT_SELECTION.browserId);
+  if (!defaultDevice || !defaultBrowser) throw new Error("uxqa built-in default profiles are missing");
+  const device = requestedDevice && requestedCompatible.length > 0 ? requestedDevice : defaultDevice;
+  const compatible = requestedDevice && requestedCompatible.length > 0 ? requestedCompatible : [defaultBrowser];
+  const browser = compatible.find((candidate) => candidate.browserId === input.browserId) ?? compatible.find((candidate) => candidate.browserId === device.defaultBrowserId) ?? compatible[0] ?? defaultBrowser;
   const chrome = input.chrome === "auto" || input.chrome === "on" || input.chrome === "off" ? input.chrome : DEFAULT_SELECTION.chrome;
   return { selection: { deviceId: device.id, browserId: browser.browserId, chrome }, device, browser };
 }
@@ -87,18 +80,86 @@ function validRect(rect: ContentRect, screen: Size): boolean {
   return [rect.x, rect.y, rect.width, rect.height].every(Number.isFinite) && rect.x >= 0 && rect.y >= 0 && rect.width > 0 && rect.height > 0 && rect.x + rect.width <= screen.width && rect.y + rect.height <= screen.height;
 }
 
-export function validateProfiles(profiles: SimulatorProfiles): ProfileValidation {
+function parseRect(value: unknown, path: string, errors: string[]): ContentRect | null {
+  if (typeof value !== "object" || value === null || !("x" in value) || !("y" in value) || !("width" in value) || !("height" in value)) {
+    errors.push(`${path} must contain x, y, width, and height`); return null;
+  }
+  if (![value.x, value.y, value.width, value.height].every((field) => typeof field === "number" && Number.isFinite(field))) {
+    errors.push(`${path} fields must be finite numbers`); return null;
+  }
+  if (typeof value.x !== "number" || typeof value.y !== "number" || typeof value.width !== "number" || typeof value.height !== "number") return null;
+  return { x: value.x, y: value.y, width: value.width, height: value.height };
+}
+
+function parseSize(value: unknown, path: string, errors: string[]): Size | null {
+  if (typeof value !== "object" || value === null || !("width" in value) || !("height" in value) || typeof value.width !== "number" || !Number.isFinite(value.width) || typeof value.height !== "number" || !Number.isFinite(value.height)) {
+    errors.push(`${path} width and height must be finite numbers`); return null;
+  }
+  if (value.width <= 0 || value.height <= 0) errors.push(`${path} dimensions must be positive`);
+  return value.width > 0 && value.height > 0 ? { width: value.width, height: value.height } : null;
+}
+
+function parseDevice(value: unknown, index: number, errors: string[]): DeviceProfile | null {
+  const path = `devices[${index}]`;
+  if (typeof value !== "object" || value === null || !("id" in value) || !("label" in value) || !("platform" in value) || !("screen" in value) || !("defaultBrowserId" in value) || !("cornerRadiusPx" in value)) {
+    errors.push(`${path} must contain all device fields`); return null;
+  }
+  if (typeof value.id !== "string" || value.id.length === 0) errors.push(`${path}.id must be a non-empty string`);
+  if (typeof value.label !== "string" || value.label.length === 0) errors.push(`${path}.label must be a non-empty string`);
+  if (value.platform !== "ios" && value.platform !== "android" && value.platform !== "ipados" && value.platform !== "macos" && value.platform !== "windows") errors.push(`${path}.platform is invalid`);
+  if (typeof value.defaultBrowserId !== "string" || value.defaultBrowserId.length === 0) errors.push(`${path}.defaultBrowserId must be a non-empty string`);
+  if (typeof value.cornerRadiusPx !== "number" || !Number.isFinite(value.cornerRadiusPx) || value.cornerRadiusPx < 0) errors.push(`${path}.cornerRadiusPx must be a finite non-negative number`);
+  const screen = parseSize(value.screen, `${path}.screen`, errors);
+  if (typeof value.id !== "string" || !value.id || typeof value.label !== "string" || !value.label || (value.platform !== "ios" && value.platform !== "android" && value.platform !== "ipados" && value.platform !== "macos" && value.platform !== "windows") || typeof value.defaultBrowserId !== "string" || !value.defaultBrowserId || typeof value.cornerRadiusPx !== "number" || !Number.isFinite(value.cornerRadiusPx) || value.cornerRadiusPx < 0 || !screen) return null;
+  return { id: value.id, label: value.label, platform: value.platform, screen, defaultBrowserId: value.defaultBrowserId, cornerRadiusPx: value.cornerRadiusPx };
+}
+
+function parseBrowser(value: unknown, index: number, errors: string[]): BrowserProfile | null {
+  const path = `browsers[${index}]`;
+  if (typeof value !== "object" || value === null || !("id" in value) || !("deviceId" in value) || !("browserId" in value) || !("label" in value) || !("appearance" in value) || !("chrome" in value) || !("calibration" in value)) {
+    errors.push(`${path} must contain all browser fields`); return null;
+  }
+  for (const [field, fieldValue] of [["id", value.id], ["deviceId", value.deviceId], ["browserId", value.browserId], ["label", value.label], ["appearance", value.appearance]]) {
+    if (typeof fieldValue !== "string" || fieldValue.length === 0) errors.push(`${path}.${field} must be a non-empty string`);
+  }
+  let chrome: ChromeBehavior | null = null;
+  if (typeof value.chrome !== "object" || value.chrome === null || !("kind" in value.chrome)) errors.push(`${path}.chrome must be an object with a kind`);
+  else if (value.chrome.kind === "fixed") {
+    if (!("content" in value.chrome)) errors.push(`${path}.chrome.content is required`);
+    else { const content = parseRect(value.chrome.content, `${path}.chrome.content`, errors); if (content) chrome = { kind: "fixed", content }; }
+  } else if (value.chrome.kind === "scroll-linked") {
+    if (!("expanded" in value.chrome) || !("collapsed" in value.chrome) || !("collapseThresholdPx" in value.chrome) || !("expandThresholdPx" in value.chrome) || !("transitionMs" in value.chrome)) errors.push(`${path}.chrome must contain all scroll-linked fields`);
+    else {
+      const expanded = parseRect(value.chrome.expanded, `${path}.chrome.expanded`, errors);
+      const collapsed = parseRect(value.chrome.collapsed, `${path}.chrome.collapsed`, errors);
+      const thresholdsValid = typeof value.chrome.collapseThresholdPx === "number" && Number.isFinite(value.chrome.collapseThresholdPx) && value.chrome.collapseThresholdPx > 0 && typeof value.chrome.expandThresholdPx === "number" && Number.isFinite(value.chrome.expandThresholdPx) && value.chrome.expandThresholdPx > 0 && typeof value.chrome.transitionMs === "number" && Number.isFinite(value.chrome.transitionMs) && value.chrome.transitionMs >= 0;
+      if (!thresholdsValid) errors.push(`${path}.chrome thresholds must be finite and positive, and transitionMs finite and non-negative`);
+      if (expanded && collapsed && thresholdsValid && typeof value.chrome.collapseThresholdPx === "number" && typeof value.chrome.expandThresholdPx === "number" && typeof value.chrome.transitionMs === "number") chrome = { kind: "scroll-linked", expanded, collapsed, collapseThresholdPx: value.chrome.collapseThresholdPx, expandThresholdPx: value.chrome.expandThresholdPx, transitionMs: value.chrome.transitionMs };
+    }
+  } else errors.push(`${path}.chrome.kind must be fixed or scroll-linked`);
+  let parsedCalibration: BrowserProfile["calibration"] | null = null;
+  if (typeof value.calibration !== "object" || value.calibration === null || !("capturedVersion" in value.calibration) || !("capturedAt" in value.calibration) || !("source" in value.calibration) || typeof value.calibration.capturedVersion !== "string" || !value.calibration.capturedVersion || typeof value.calibration.capturedAt !== "string" || !value.calibration.capturedAt || typeof value.calibration.source !== "string" || !value.calibration.source) errors.push(`${path}.calibration fields must be non-empty strings`);
+  else parsedCalibration = { capturedVersion: value.calibration.capturedVersion, capturedAt: value.calibration.capturedAt, source: value.calibration.source };
+  if (typeof value.id !== "string" || !value.id || typeof value.deviceId !== "string" || !value.deviceId || typeof value.browserId !== "string" || !value.browserId || typeof value.label !== "string" || !value.label || typeof value.appearance !== "string" || !value.appearance || !chrome || !parsedCalibration) return null;
+  return { id: value.id, deviceId: value.deviceId, browserId: value.browserId, label: value.label, appearance: value.appearance, chrome, calibration: parsedCalibration };
+}
+
+export function validateProfiles(input: unknown): ProfileValidation {
   const errors: string[] = [];
-  const ids = new Set<string>();
-  profiles.devices.forEach((device, index) => {
-    if (!device.id) errors.push(`devices[${index}].id must be a non-empty string`);
-    if (ids.has(device.id)) errors.push(`devices[${index}].id must be unique`);
-    ids.add(device.id);
-    if (!Number.isFinite(device.screen.width) || device.screen.width <= 0) errors.push(`devices[${index}].screen.width must be positive`);
-    if (!Number.isFinite(device.screen.height) || device.screen.height <= 0) errors.push(`devices[${index}].screen.height must be positive`);
-  });
-  profiles.browsers.forEach((browser, index) => {
-    const device = profiles.devices.find((candidate) => candidate.id === browser.deviceId);
+  if (typeof input !== "object" || input === null || !("devices" in input) || !("browsers" in input) || !Array.isArray(input.devices) || !Array.isArray(input.browsers)) return { ok: false, errors: ["profiles must contain devices and browsers arrays"] };
+  const devices = input.devices.map((value, index) => parseDevice(value, index, errors)).filter((value) => value !== null);
+  const browsers = input.browsers.map((value, index) => parseBrowser(value, index, errors)).filter((value) => value !== null);
+  const deviceIds = new Set<string>();
+  devices.forEach((device, index) => { if (deviceIds.has(device.id)) errors.push(`devices[${index}].id must be unique`); deviceIds.add(device.id); });
+  const browserIds = new Set<string>();
+  const pairs = new Set<string>();
+  browsers.forEach((browser, index) => {
+    if (browserIds.has(browser.id)) errors.push(`browsers[${index}].id must be unique`);
+    browserIds.add(browser.id);
+    const pair = `${browser.deviceId}/${browser.browserId}`;
+    if (pairs.has(pair)) errors.push(`browsers[${index}] deviceId/browserId pair must be unique`);
+    pairs.add(pair);
+    const device = devices.find((candidate) => candidate.id === browser.deviceId);
     if (!device) { errors.push(`browsers[${index}].deviceId must reference a device`); return; }
     switch (browser.chrome.kind) {
       case "fixed":
@@ -107,6 +168,7 @@ export function validateProfiles(profiles: SimulatorProfiles): ProfileValidation
       case "scroll-linked":
         if (!validRect(browser.chrome.expanded, device.screen)) errors.push(`browsers[${index}].chrome.expanded must fit within the device screen`);
         if (!validRect(browser.chrome.collapsed, device.screen)) errors.push(`browsers[${index}].chrome.collapsed must fit within the device screen`);
+        if (browser.chrome.collapsed.height < browser.chrome.expanded.height) errors.push(`browsers[${index}].chrome.collapsed.height must be at least expanded.height`);
         if (browser.chrome.collapseThresholdPx <= 0) errors.push(`browsers[${index}].chrome.collapseThresholdPx must be positive`);
         if (browser.chrome.expandThresholdPx <= 0) errors.push(`browsers[${index}].chrome.expandThresholdPx must be positive`);
         if (browser.chrome.transitionMs < 0) errors.push(`browsers[${index}].chrome.transitionMs must not be negative`);
@@ -114,6 +176,12 @@ export function validateProfiles(profiles: SimulatorProfiles): ProfileValidation
       default: { const exhaustive: never = browser.chrome; return exhaustive; }
     }
   });
+  devices.forEach((device, index) => {
+    const compatible = browsers.filter((browser) => browser.deviceId === device.id);
+    if (compatible.length === 0) errors.push(`devices[${index}] must have at least one compatible browser`);
+    if (!compatible.some((browser) => browser.browserId === device.defaultBrowserId)) errors.push(`devices[${index}].defaultBrowserId must reference a compatible browser`);
+  });
+  const profiles: SimulatorProfiles = { devices, browsers };
   return errors.length === 0 ? { ok: true, profiles } : { ok: false, errors };
 }
 

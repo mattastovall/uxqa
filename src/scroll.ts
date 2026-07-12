@@ -6,14 +6,17 @@ export type ScrollTelemetry = Readonly<{ kind: typeof SCROLL_MESSAGE_KIND; versi
 export type ChromeScrollTracker = Readonly<{ kind: "expanded"; downwardPx: number }> | Readonly<{ kind: "collapsed"; upwardPx: number }>;
 
 export function createScrollTelemetry({ scrollY, scrollProgress = 0, deltaY, canScroll }: Readonly<{ scrollY: number; scrollProgress?: number; deltaY: number; canScroll: boolean }>): ScrollTelemetry {
-  return { kind: SCROLL_MESSAGE_KIND, version: SCROLL_MESSAGE_VERSION, scrollY, scrollProgress, deltaY, atTop: scrollY <= 0, canScroll };
+  const normalizedScrollY = Number.isFinite(scrollY) ? Math.max(0, scrollY) : 0;
+  const normalizedProgress = canScroll && Number.isFinite(scrollProgress) ? Math.min(1, Math.max(0, scrollProgress)) : 0;
+  const normalizedDelta = Number.isFinite(deltaY) ? deltaY : 0;
+  return { kind: SCROLL_MESSAGE_KIND, version: SCROLL_MESSAGE_VERSION, scrollY: normalizedScrollY, scrollProgress: normalizedProgress, deltaY: normalizedDelta, atTop: normalizedScrollY === 0, canScroll };
 }
 
 const finite = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 
 export function parseScrollTelemetry(value: unknown): ScrollTelemetry | null {
   if (typeof value !== "object" || value === null || !("kind" in value) || !("version" in value) || !("scrollY" in value) || !("scrollProgress" in value) || !("deltaY" in value) || !("atTop" in value) || !("canScroll" in value)) return null;
-  if (value.kind !== SCROLL_MESSAGE_KIND || value.version !== SCROLL_MESSAGE_VERSION || !finite(value.scrollY) || !finite(value.scrollProgress) || value.scrollProgress < 0 || value.scrollProgress > 1 || !finite(value.deltaY) || typeof value.atTop !== "boolean" || typeof value.canScroll !== "boolean") return null;
+  if (value.kind !== SCROLL_MESSAGE_KIND || value.version !== SCROLL_MESSAGE_VERSION || !finite(value.scrollY) || value.scrollY < 0 || !finite(value.scrollProgress) || value.scrollProgress < 0 || value.scrollProgress > 1 || !finite(value.deltaY) || typeof value.atTop !== "boolean" || value.atTop !== (value.scrollY === 0) || typeof value.canScroll !== "boolean" || (!value.canScroll && value.scrollProgress !== 0)) return null;
   return { kind: value.kind, version: value.version, scrollY: value.scrollY, scrollProgress: value.scrollProgress, deltaY: value.deltaY, atTop: value.atTop, canScroll: value.canScroll };
 }
 

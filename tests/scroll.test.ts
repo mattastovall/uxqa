@@ -13,6 +13,14 @@ describe("chrome scroll model", () => {
     expect(parseScrollTelemetry(telemetry)).toEqual(telemetry);
     expect(parseScrollTelemetry({ ...telemetry, version: 2 })).toBeNull();
     expect(parseScrollTelemetry({ ...telemetry, scrollProgress: Infinity })).toBeNull();
+    expect(parseScrollTelemetry({ ...telemetry, scrollY: -1 })).toBeNull();
+    expect(parseScrollTelemetry({ ...telemetry, atTop: true })).toBeNull();
+    expect(parseScrollTelemetry({ ...telemetry, canScroll: false, scrollProgress: 0.5 })).toBeNull();
+  });
+
+  it("normalizes telemetry produced from unusable measurements", () => {
+    expect(createScrollTelemetry({ scrollY: -10, scrollProgress: 2, deltaY: Number.NaN, canScroll: true })).toMatchObject({ scrollY: 0, scrollProgress: 1, deltaY: 0, atTop: true });
+    expect(createScrollTelemetry({ scrollY: 10, scrollProgress: 0.5, deltaY: 1, canScroll: false }).scrollProgress).toBe(0);
   });
 
   it("crosses collapse and expansion thresholds", () => {
