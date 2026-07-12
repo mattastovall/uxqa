@@ -3,6 +3,8 @@ dist/
 coverage/
 playwright-report/
 test-results/
+.playwright-cli/
+output/
 *.tgz
 .DS_Store
 .worktrees/

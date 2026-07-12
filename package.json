@@ -29,12 +29,14 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": ["dist"],
-  "workspaces": ["demo"],
+  "workspaces": ["demo", "site"],
   "scripts": {
     "build": "tsup",
     "check": "npm run lint && npm run typecheck && npm test -- --run && npm run build && npm run verify:package",
     "demo:build": "npm run build && npm run build --workspace demo",
     "demo:dev": "npm run build && npm run dev --workspace demo",
+    "site:build": "npm run build && npm run build --workspace site",
+    "site:dev": "npm run build && npm run dev --workspace site",
     "lint": "eslint .",
     "test": "vitest",
     "test:e2e": "playwright test",
