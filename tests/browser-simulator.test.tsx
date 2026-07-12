@@ -180,6 +180,25 @@ describe("BrowserSimulator", () => {
     expect(() => fireEvent.load(crossOriginFrame)).not.toThrow();
   });
 
+  it("reattaches same-origin scrolling when the profile changes without reloading the iframe", () => {
+    render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "pixel", browserId: "chrome", chrome: "auto" }} />);
+    const frame = screen.getByTitle("Website preview") as HTMLIFrameElement;
+    const addEventListener = vi.fn();
+    const removeEventListener = vi.fn();
+    Object.defineProperty(frame, "contentWindow", { configurable: true, value: { scrollY: 0, document: { documentElement: { scrollHeight: 1000, clientHeight: 500 } }, addEventListener, removeEventListener } });
+
+    fireEvent.load(frame);
+    expect(addEventListener).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Browser"), { target: { value: "instagram" } });
+    expect(removeEventListener).toHaveBeenCalledTimes(1);
+    expect(addEventListener).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Browser"), { target: { value: "chrome" } });
+    expect(addEventListener).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole("status")).toHaveTextContent("Preview loaded");
+  });
+
   it("cleans up ResizeObserver and isolates multiple instances", () => {
     const { unmount } = render(<><BrowserSimulator src="/one" /><BrowserSimulator src="/two" /></>);
     expect(ResizeObserverMock.instances).toHaveLength(2);

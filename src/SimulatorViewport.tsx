@@ -48,7 +48,6 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
     return () => observer.disconnect();
   }, [profile.device.screen]);
 
-  useEffect(() => () => detachScrollRef.current?.(), []);
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame || iframeSrc === undefined) return;
@@ -69,13 +68,12 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
     setChromeState("expanded");
   }, [profile.browser.id, profile.selection.chrome]);
 
-  const rect = getContentRect({ profile, chromeState });
-  const screenStyle = { width: profile.device.screen.width, height: profile.device.screen.height, borderRadius: profile.device.cornerRadiusPx, transform: `scale(${scale})` };
-  const contentStyle = { left: rect.x, top: rect.y, width: rect.width, height: rect.height, transitionDuration: `${profile.browser.chrome.kind === "scroll-linked" ? profile.browser.chrome.transitionMs : 0}ms` };
-  const attachScroll = (frame: HTMLIFrameElement) => {
+  useEffect(() => {
     detachScrollRef.current?.();
     detachScrollRef.current = null;
-    if (profile.selection.chrome !== "auto" || profile.browser.chrome.kind !== "scroll-linked") return;
+    if (status !== "loaded" || iframeSrc === undefined || profile.selection.chrome !== "auto" || profile.browser.chrome.kind !== "scroll-linked") return;
+    const frame = frameRef.current;
+    if (!frame) return;
     try {
       const target = frame.contentWindow;
       if (!target) return;
@@ -90,12 +88,21 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
         setChromeState(trackerRef.current.kind);
       };
       target.addEventListener("scroll", handleScroll, { passive: true });
-      detachScrollRef.current = () => target.removeEventListener("scroll", handleScroll);
+      const detach = () => target.removeEventListener("scroll", handleScroll);
+      detachScrollRef.current = detach;
+      return () => {
+        detach();
+        if (detachScrollRef.current === detach) detachScrollRef.current = null;
+      };
     } catch {
       trackerRef.current = { kind: "expanded", downwardPx: 0 };
       setChromeState("expanded");
     }
-  };
+  }, [iframeSrc, profile.browser.chrome, profile.browser.id, profile.selection.chrome, status]);
+
+  const rect = getContentRect({ profile, chromeState });
+  const screenStyle = { width: profile.device.screen.width, height: profile.device.screen.height, borderRadius: profile.device.cornerRadiusPx, transform: `scale(${scale})` };
+  const contentStyle = { left: rect.x, top: rect.y, width: rect.width, height: rect.height, transitionDuration: `${profile.browser.chrome.kind === "scroll-linked" ? profile.browser.chrome.transitionMs : 0}ms` };
   const rootClassName = ["uxqa-viewport", className].filter(Boolean).join(" ");
 
   return (
@@ -103,7 +110,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
       <div className="uxqa-screen" style={screenStyle} data-device={profile.device.id}>
         <BrowserChrome profile={profile} chromeState={chromeState} hostname={addressFor(props.src, hostname)} />
         <div className="uxqa-content" style={contentStyle}>
-          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => { setStatus("loaded"); attachScroll(event.currentTarget); onLoad?.(event); }} /> : <div className="uxqa-react-content">{props.content}</div>}
+          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => { setStatus("loaded"); onLoad?.(event); }} /> : <div className="uxqa-react-content">{props.content}</div>}
         </div>
       </div>
       {"src" in props ? <span className={`uxqa-status uxqa-status--${status}`} role="status">{status === "loading" ? "Loading preview" : status === "loaded" ? "Preview loaded" : "Preview failed to load"}</span> : null}
