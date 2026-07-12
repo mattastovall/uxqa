@@ -199,11 +199,11 @@ Publication is a maintainer-controlled action:
 1. Update `CHANGELOG.md` and the package version.
 2. Run `npm run check` and `npm run test:e2e`.
 3. Inspect `npm pack --dry-run`.
-4. Push a `v<package-version>` tag, then run or confirm the GitHub `Publish` workflow. The workflow verifies that the tag matches `package.json` and publishes through npm trusted publishing with provenance.
+4. Push a `v<package-version>` tag, then manually run the GitHub `Publish` workflow against that tag. The workflow verifies that the selected tag matches `package.json` and publishes through npm trusted publishing with provenance.
 
-Configure npm trusted publishing for the `mattastovall/uxqa` repository and `.github/workflows/publish.yml` before the first release. Manual workflow runs must also target the matching version tag; selecting a branch fails the release gate.
+Configure npm trusted publishing for the `mattastovall/uxqa` repository, the `npm` GitHub environment, and `.github/workflows/publish.yml` before the first release. Publish runs are manual-only and must target the matching version tag; selecting a branch fails the release gate.
 
-No npm publication occurs automatically during local development.
+No npm publication occurs automatically from a branch or tag push.
 
 ## License
 
