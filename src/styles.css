@@ -1,0 +1,57 @@
+.uxqa-simulator {
+  --uxqa-canvas-background: #eef1f5;
+  --uxqa-control-background: #ffffff;
+  --uxqa-control-color: #17202a;
+  --uxqa-radius: 16px;
+  --uxqa-shadow: 0 20px 60px rgb(18 28 45 / 18%);
+  --uxqa-min-height: 480px;
+  box-sizing: border-box;
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  color: var(--uxqa-control-color);
+  font: 500 14px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
+
+.uxqa-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.uxqa-control { display: grid; gap: 4px; }
+.uxqa-control select {
+  min-height: 36px;
+  padding: 6px 32px 6px 10px;
+  border: 1px solid #aeb7c2;
+  border-radius: 8px;
+  background: var(--uxqa-control-background);
+  color: var(--uxqa-control-color);
+  font: inherit;
+}
+.uxqa-control--checkbox { grid-auto-flow: column; align-items: center; align-self: center; }
+.uxqa-control input { width: 18px; height: 18px; accent-color: #2458d3; }
+.uxqa-control select:focus-visible, .uxqa-control input:focus-visible { outline: 3px solid #2458d3; outline-offset: 2px; }
+.uxqa-viewport {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: var(--uxqa-min-height);
+  overflow: hidden;
+  border-radius: var(--uxqa-radius);
+  background: var(--uxqa-canvas-background);
+}
+.uxqa-screen {
+  position: absolute;
+  overflow: hidden;
+  transform-origin: center;
+  background: #fff;
+  box-shadow: var(--uxqa-shadow);
+}
+.uxqa-content { position: absolute; overflow: hidden; transition-property: top, height; transition-timing-function: ease; }
+.uxqa-frame, .uxqa-react-content { width: 100%; height: 100%; border: 0; background: #fff; }
+.uxqa-react-content { overflow: auto; }
+.uxqa-browser-chrome { position: absolute; inset: 0; z-index: 2; pointer-events: none; color: #111827; font: 600 13px/1 ui-sans-serif, system-ui, sans-serif; }
+.uxqa-browser-chrome__status { display: flex; justify-content: space-between; padding: 14px 22px 8px; }
+.uxqa-browser-chrome__toolbar { display: flex; align-items: center; gap: 10px; margin: 4px 12px; }
+.uxqa-browser-chrome__address { flex: 1; overflow: hidden; padding: 10px 14px; border: 1px solid rgb(0 0 0 / 8%); border-radius: 999px; background: rgb(245 246 248 / 92%); text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.uxqa-browser-chrome__control { font-size: 20px; }
+.uxqa-status { position: absolute; left: 12px; bottom: 10px; padding: 5px 8px; border-radius: 6px; background: rgb(255 255 255 / 90%); color: #344054; font-size: 12px; }
+.uxqa-status--error { color: #9f1c1c; }
+@media (prefers-reduced-motion: reduce) { .uxqa-content { transition: none; } }

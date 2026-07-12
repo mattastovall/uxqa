@@ -8,6 +8,7 @@
     "exactOptionalPropertyTypes": true,
     "declaration": true,
     "isolatedModules": true,
+    "jsx": "react-jsx",
     "skipLibCheck": true,
     "types": ["node", "vitest/globals"]
   },
