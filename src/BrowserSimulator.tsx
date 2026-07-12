@@ -48,6 +48,17 @@ export function BrowserSimulator(props: BrowserSimulatorProps) {
     ...(onError === undefined ? {} : { onError }),
   };
 
+  if (!profileResult.ok) {
+    return (
+      <div className={["uxqa-simulator", className].filter(Boolean).join(" ")} style={style}>
+        <div className="uxqa-profile-error" role="alert">
+          <strong>Invalid simulator profiles</strong>
+          <span>{profileResult.errors.join("; ")}</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={["uxqa-simulator", className].filter(Boolean).join(" ")} style={style}>
       {controls !== false ? <SimulatorControls selection={resolved.selection} devices={profiles.devices} browsers={profiles.browsers} onSelectionChange={changeSelection} {...controlProps} /> : null}

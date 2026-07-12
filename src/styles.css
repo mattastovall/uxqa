@@ -28,6 +28,12 @@
 .uxqa-control input { width: 18px; height: 18px; accent-color: #2458d3; }
 .uxqa-control select:focus-visible, .uxqa-control input:focus-visible { outline: 3px solid #2458d3; outline-offset: 2px; }
 .uxqa-viewport {
+  --uxqa-canvas-background: #eef1f5;
+  --uxqa-control-background: #ffffff;
+  --uxqa-control-color: #17202a;
+  --uxqa-radius: 16px;
+  --uxqa-shadow: 0 20px 60px rgb(18 28 45 / 18%);
+  --uxqa-min-height: 480px;
   position: relative;
   display: grid;
   place-items: center;
@@ -47,11 +53,61 @@
 .uxqa-content { position: absolute; overflow: hidden; transition-property: top, height; transition-timing-function: ease; }
 .uxqa-frame, .uxqa-react-content { width: 100%; height: 100%; border: 0; background: #fff; }
 .uxqa-react-content { overflow: auto; }
-.uxqa-browser-chrome { position: absolute; inset: 0; z-index: 2; pointer-events: none; color: #111827; font: 600 13px/1 ui-sans-serif, system-ui, sans-serif; }
-.uxqa-browser-chrome__status { display: flex; justify-content: space-between; padding: 14px 22px 8px; }
-.uxqa-browser-chrome__toolbar { display: flex; align-items: center; gap: 10px; margin: 4px 12px; }
-.uxqa-browser-chrome__address { flex: 1; overflow: hidden; padding: 10px 14px; border: 1px solid rgb(0 0 0 / 8%); border-radius: 999px; background: rgb(245 246 248 / 92%); text-align: center; text-overflow: ellipsis; white-space: nowrap; }
-.uxqa-browser-chrome__control { font-size: 20px; }
+.uxqa-browser-chrome { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; user-select: none; color: #121317; font: 600 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.uxqa-browser-chrome svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.uxqa-chrome-status { position: absolute; inset: 0 0 auto; z-index: 4; display: flex; box-sizing: border-box; align-items: center; justify-content: space-between; padding: 0 18px; background: rgb(247 247 249 / 96%); font-size: 12px; font-weight: 700; }
+.uxqa-dynamic-island { position: absolute; top: 12px; left: 50%; width: 92px; height: 28px; border-radius: 999px; background: #050505; transform: translateX(-50%); }
+.uxqa-status-indicators { min-width: 54px; text-align: right; }
+.uxqa-top-chrome, .uxqa-bottom-chrome { position: absolute; right: 0; left: 0; box-sizing: border-box; }
+.uxqa-top-chrome { top: 0; height: var(--uxqa-content-y); }
+.uxqa-bottom-chrome { bottom: 0; height: calc(100% - var(--uxqa-content-y) - var(--uxqa-content-height)); }
+.uxqa-glyph { display: grid; width: 24px; height: 24px; flex: 0 0 auto; place-items: center; }
+.uxqa-glyph > svg { width: 17px; height: 17px; }
+.uxqa-address-pill { display: flex; min-width: 0; height: 34px; flex: 1; align-items: center; justify-content: center; gap: 6px; padding: 0 10px; border-radius: 18px; background: rgb(255 255 255 / 78%); box-shadow: 0 0 0 1px rgb(0 0 0 / 6%); }
+.uxqa-hostname { min-width: 0; overflow: hidden; flex: 1; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.uxqa-home-indicator { position: absolute; bottom: 7px; left: 50%; width: 110px; height: 4px; border-radius: 999px; background: currentColor; opacity: .82; transform: translateX(-50%); }
+.uxqa-ios26-safari { position: absolute; right: 12px; bottom: 37px; left: 12px; z-index: 3; display: grid; grid-template-columns: 52px minmax(0, 1fr) 52px; gap: 8px; align-items: center; color: #fff; transition: bottom 420ms ease, grid-template-columns 420ms ease, gap 420ms ease; }
+.uxqa-ios26-side, .uxqa-ios26-address { display: flex; height: 52px; align-items: center; justify-content: center; box-sizing: border-box; border: 1px solid rgb(255 255 255 / 38%); border-radius: 999px; background: rgb(76 84 98 / 74%); backdrop-filter: blur(22px); }
+.uxqa-ios26-side > svg { width: 23px; height: 23px; }
+.uxqa-ios26-address { min-width: 0; padding: 0 14px; }
+.uxqa-ios26-safari--collapsed { bottom: 13px; grid-template-columns: 0 minmax(0, 112px) 0; gap: 0; justify-content: center; }
+.uxqa-ios26-safari--collapsed .uxqa-ios26-side { width: 0; height: 0; overflow: hidden; border: 0; opacity: 0; }
+.uxqa-ios26-safari--collapsed .uxqa-ios26-address { height: 32px; padding: 0 12px; font-size: 11px; }
+.uxqa-browser-chrome[data-appearance="ios26-safari"] { color: #fff; }
+.uxqa-browser-chrome[data-appearance="ios26-safari"] .uxqa-chrome-status { background: #000; color: #fff; }
+.uxqa-browser-chrome[data-appearance="ios26-safari"]::before { position: absolute; right: 0; bottom: 0; left: 0; height: calc(100% - var(--uxqa-content-y) - var(--uxqa-content-height)); background: #000; content: ""; }
+.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="expanded"]::before { height: 97px; }
+.uxqa-legacy-safari { z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 10px; background: rgb(240 240 244 / 94%); }
+.uxqa-mobile-actions { display: flex; width: 100%; justify-content: space-around; color: #1667d9; }
+.uxqa-collapsed-domain { max-width: calc(100% - 70px); overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.uxqa-android-toolbar { z-index: 3; top: 24px; display: flex; height: 56px; align-items: center; gap: 10px; padding: 9px 10px; background: #f6f7fb; }
+.uxqa-android-gesture, .uxqa-ipad-home, .uxqa-app-bottom { z-index: 3; background: rgb(248 248 250 / 98%); }
+.uxqa-ipad-toolbar { z-index: 3; top: 24px; display: flex; height: 50px; align-items: center; gap: 12px; padding: 7px 15px; background: rgb(241 241 245 / 96%); }
+.uxqa-macos-safari, .uxqa-windows-chrome { z-index: 3; display: flex; flex-direction: column; background: #ececef; }
+.uxqa-desktop-tab-row, .uxqa-desktop-address-row { display: flex; align-items: center; box-sizing: border-box; }
+.uxqa-desktop-tab-row { height: 30px; gap: 10px; padding: 4px 12px; background: #dedee2; }
+.uxqa-desktop-address-row { height: 40px; gap: 9px; padding: 4px 12px; }
+.uxqa-windows-chrome .uxqa-desktop-tab-row { height: 38px; background: #dfe2e8; }
+.uxqa-windows-chrome .uxqa-desktop-address-row { height: 48px; background: #f1f3f7; }
+.uxqa-window-controls { display: flex; gap: 7px; margin-left: auto; }
+.uxqa-window-controls > span { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
+.uxqa-window-controls > span:first-child { background: #ff5f57; }
+.uxqa-window-controls > span:nth-child(2) { background: #febc2e; }
+.uxqa-desktop-tab { min-width: 150px; padding: 6px 14px; border-radius: 8px 8px 3px 3px; background: rgb(255 255 255 / 66%); font-size: 12px; }
+.uxqa-new-tab { font-size: 18px; }
+.uxqa-app-toolbar { z-index: 3; display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; padding: 0 6px; background: rgb(251 251 252 / 98%); }
+.uxqa-app-toolbar[data-app="instagram"] { background: linear-gradient(90deg, #fff, #fff8fc, #fff); }
+.uxqa-app-toolbar[data-app="facebook"] { background: #f7f9ff; color: #0c56b5; }
+.uxqa-app-toolbar[data-app="linkedin"] { background: #f6f9fb; color: #0a66c2; }
+.uxqa-app-glyph { display: grid; width: 40px; height: 40px; place-items: center; }
+.uxqa-app-glyph > svg { width: 20px; height: 20px; }
+.uxqa-app-title { display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+.uxqa-app-title strong { font-size: 12px; }
+.uxqa-app-title span { max-width: 100%; overflow: hidden; color: rgb(22 23 28 / 58%); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.uxqa-neutral-toolbar { display: flex; align-items: center; padding: 8px 12px; background: #f1f3f7; }
+.uxqa-profile-error { min-height: 120px; padding: 18px; border: 1px solid #d8a4a4; border-radius: var(--uxqa-radius, 16px); background: #fff7f7; color: #851b1b; }
+.uxqa-profile-error strong, .uxqa-profile-error span { display: block; }
+.uxqa-profile-error span { margin-top: 5px; font-size: 12px; }
 .uxqa-status { position: absolute; left: 12px; bottom: 10px; padding: 5px 8px; border-radius: 6px; background: rgb(255 255 255 / 90%); color: #344054; font-size: 12px; }
 .uxqa-status--error { color: #9f1c1c; }
-@media (prefers-reduced-motion: reduce) { .uxqa-content { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .uxqa-content, .uxqa-ios26-safari { transition: none; } }

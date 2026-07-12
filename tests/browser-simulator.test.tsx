@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { BrowserSimulator } from "../src/index.js";
+import { BrowserSimulator, SimulatorViewport, resolveSimulatorSelection } from "../src/index.js";
 
 class ResizeObserverMock {
   static instances: ResizeObserverMock[] = [];
@@ -63,10 +63,50 @@ describe("BrowserSimulator", () => {
     expect(screen.getByText("preview.example")).toBeInTheDocument();
   });
 
+  it("renders distinct chrome for browser and device selections", () => {
+    const { container } = render(<BrowserSimulator src="/" />);
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-appearance", "ios26-safari");
+    expect(container.querySelector(".uxqa-ios26-safari")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Browser"), { target: { value: "instagram" } });
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-appearance", "instagram");
+    expect(container.querySelector('[data-app="instagram"]')).toHaveTextContent("Instagram");
+    fireEvent.change(screen.getByLabelText("Device"), { target: { value: "windows-desktop" } });
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-appearance", "windows-chrome");
+    expect(container.querySelector(".uxqa-windows-chrome")).toBeInTheDocument();
+  });
+
+  it("collapses scroll-linked chrome without painting the expanded toolbar", () => {
+    const { container } = render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "pixel", browserId: "chrome", chrome: "auto" }} />);
+    const frame = screen.getByTitle("Website preview") as HTMLIFrameElement;
+    let scrollY = 0;
+    let scrollHandler: (() => void) | undefined;
+    const target = {
+      get scrollY() { return scrollY; },
+      document: { documentElement: { scrollHeight: 1000, clientHeight: 500 } },
+      addEventListener: vi.fn((_name: string, handler: () => void) => { scrollHandler = handler; }),
+      removeEventListener: vi.fn(),
+    };
+    Object.defineProperty(frame, "contentWindow", { configurable: true, value: target });
+    fireEvent.load(frame);
+    expect(container.querySelector(".uxqa-android-toolbar")).toBeInTheDocument();
+    scrollY = 60;
+    act(() => scrollHandler?.());
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-chrome-state", "collapsed");
+    expect(container.querySelector(".uxqa-android-toolbar")).not.toBeInTheDocument();
+  });
+
   it("reports invalid controlled selections", () => {
     const onError = vi.fn();
     render(<BrowserSimulator src="/" selection={{ deviceId: "missing", browserId: "missing", chrome: "auto" }} onSelectionChange={vi.fn()} onError={onError} />);
     expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining("missing") }));
+  });
+
+  it("renders a compact invalid-profile error instead of a silent fallback", () => {
+    const onError = vi.fn();
+    render(<BrowserSimulator src="/" profiles={{ devices: [], browsers: [{ id: "bad/browser", deviceId: "bad", browserId: "browser", label: "Bad", appearance: "bad", chrome: { kind: "fixed", content: { x: 0, y: 0, width: 10, height: 10 } }, calibration: { capturedVersion: "1", capturedAt: "today", source: "test" } }] }} onError={onError} />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Invalid simulator profiles");
+    expect(screen.queryByTitle("Website preview")).not.toBeInTheDocument();
+    expect(onError).toHaveBeenCalledOnce();
   });
 
   it("announces iframe loading, load, and error status", () => {
@@ -81,6 +121,21 @@ describe("BrowserSimulator", () => {
     fireEvent.error(screen.getByTitle("Website preview"));
     expect(onError).toHaveBeenCalledOnce();
     expect(screen.getByRole("status")).toHaveTextContent("Preview failed to load");
+  });
+
+  it("returns iframe status to loading when src changes", () => {
+    const { rerender } = render(<BrowserSimulator src="/first" />);
+    fireEvent.load(screen.getByTitle("Website preview"));
+    expect(screen.getByRole("status")).toHaveTextContent("Preview loaded");
+    rerender(<BrowserSimulator src="/second" />);
+    expect(screen.getByRole("status")).toHaveTextContent("Loading preview");
+  });
+
+  it("gives standalone SimulatorViewport the default styling root", () => {
+    const profile = resolveSimulatorSelection({ deviceId: "iphone-16", browserId: "safari", chrome: "auto" });
+    const { container } = render(<SimulatorViewport content={<main>Standalone</main>} profile={profile} />);
+    expect(container.querySelector(".uxqa-viewport")).toHaveClass("uxqa-viewport");
+    expect(container.querySelector(".uxqa-screen")).toBeInTheDocument();
   });
 
   it("attaches same-origin scrolling after load and tolerates cross-origin access", () => {

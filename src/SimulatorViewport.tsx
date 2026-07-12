@@ -35,6 +35,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   const [scale, setScale] = useState(1);
   const [chromeState, setChromeState] = useState<ChromeState>("expanded");
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  const iframeSrc = "src" in props ? props.src : undefined;
 
   useEffect(() => {
     const node = viewportRef.current;
@@ -50,15 +51,18 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   useEffect(() => () => detachScrollRef.current?.(), []);
   useEffect(() => {
     const frame = frameRef.current;
-    if (!frame || !("src" in props) || props.src === undefined) return;
-    const src = props.src;
+    if (!frame || iframeSrc === undefined) return;
+    const src = iframeSrc;
     const handleError = () => {
       setStatus("error");
       onError?.(new Error(`Preview failed to load: ${src}`));
     };
     frame.addEventListener("error", handleError);
     return () => frame.removeEventListener("error", handleError);
-  }, [onError, props]);
+  }, [iframeSrc, onError]);
+  useEffect(() => {
+    if (iframeSrc !== undefined) setStatus("loading");
+  }, [iframeSrc]);
   useEffect(() => {
     trackerRef.current = { kind: "expanded", downwardPx: 0 };
     lastScrollYRef.current = 0;
