@@ -2,6 +2,8 @@ name: Pages
 
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/uxqa-site]
   workflow_run:
     workflows: [CI]
     types: [completed]
