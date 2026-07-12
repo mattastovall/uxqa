@@ -15,7 +15,7 @@ import { BrowserSimulator } from "uxqa";
 import "uxqa/styles.css";
 
 export function Preview() {
-  return <BrowserSimulator src="/campaign" />;
+  return <BrowserSimulator className="preview" src="/campaign" />;
 }
 ```
 
@@ -23,7 +23,7 @@ Give the component a bounded container so scale-to-fit has useful dimensions:
 
 ```css
 .preview { height: min(800px, 80vh); }
-.preview .uxqa-simulator, .preview .uxqa-viewport { height: 100%; }
+.preview .uxqa-viewport { height: 100%; }
 ```
 
 ### Next.js App Router
@@ -42,7 +42,7 @@ Render the simulator from a client component:
 import { BrowserSimulator } from "uxqa";
 
 export function Preview() {
-  return <BrowserSimulator src="/campaign" />;
+  return <BrowserSimulator className="preview" src="/campaign" />;
 }
 ```
 
@@ -57,7 +57,7 @@ import { BrowserSimulator } from "uxqa";
 import "uxqa/styles.css";
 
 export default function Preview() {
-  return <BrowserSimulator src="/campaign" />;
+  return <BrowserSimulator className="preview" src="/campaign" />;
 }
 ```
 
@@ -79,7 +79,7 @@ export function Preview() {
     chrome: "auto",
   });
 
-  return <BrowserSimulator src="/campaign" selection={selection} onSelectionChange={setSelection} />;
+  return <BrowserSimulator className="preview" src="/campaign" selection={selection} onSelectionChange={setSelection} />;
 }
 ```
 
@@ -90,7 +90,7 @@ Use `defaultSelection` for uncontrolled state. A controlled `selection` requires
 Pass `content` instead of `src` when an iframe is unnecessary:
 
 ```tsx
-<BrowserSimulator content={<CampaignCard />} controls={false} />
+<BrowserSimulator className="preview" content={<CampaignCard />} controls={false} />
 ```
 
 `src` and `content` are mutually exclusive.
@@ -103,6 +103,7 @@ The component does not set `sandbox` by default. Apply the permissions appropria
 
 ```tsx
 <BrowserSimulator
+  className="preview"
   src="https://example.com"
   iframeProps={{
     sandbox: "allow-scripts allow-forms",
@@ -159,7 +160,7 @@ const profiles: SimulatorProfiles = {
   }],
 };
 
-<BrowserSimulator src="/kiosk" profiles={profiles} defaultSelection={{ deviceId: "kiosk", browserId: "chrome", chrome: "auto" }} />;
+<BrowserSimulator className="preview" src="/kiosk" profiles={profiles} defaultSelection={{ deviceId: "kiosk", browserId: "chrome", chrome: "auto" }} />;
 ```
 
 Use `validateProfiles` when loading profile data at runtime.
