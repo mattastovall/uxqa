@@ -1,0 +1,19 @@
+{
+  "name": "uxqa-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "uxqa": "file:.."
+  },
+  "devDependencies": {
+    "vite": "^7.3.6"
+  }
+}
