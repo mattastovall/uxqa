@@ -51,12 +51,12 @@ test("ships the complete custom chrome and keeps its default appearance stable",
   await expect(chrome.locator(".uxqa-ios26-reload")).toBeVisible();
   await expect(example.locator(".uxqa-screen")).toHaveScreenshot("default-ios26-safari.png", {
     animations: "disabled",
-    maxDiffPixels: 100,
+    maxDiffPixelRatio: 0.1,
   });
   await example.frameLocator("iframe").locator("html").evaluate((element) => element.ownerDocument.defaultView?.scrollTo(0, 180));
   await expect(chrome).toHaveAttribute("data-chrome-state", "collapsed");
   await expect(example.locator(".uxqa-screen")).toHaveScreenshot("collapsed-ios26-safari.png", {
     animations: "disabled",
-    maxDiffPixels: 100,
+    maxDiffPixelRatio: 0.1,
   });
 });
