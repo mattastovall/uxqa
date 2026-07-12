@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type IframeHTMLAttributes, type ReactNode, type SyntheticEvent } from "react";
 import { BrowserChrome } from "./BrowserChrome.js";
+import { SafariGlassFilter, useSafariGlass } from "./SafariGlass.js";
 import { calculateScale } from "./scale.js";
 import { getContentRect, type ChromeState, type ResolvedSimulatorProfile } from "./profiles.js";
 import { createScrollTelemetry, reduceChromeScroll, type ChromeScrollTracker } from "./scroll.js";
@@ -28,6 +29,8 @@ function addressFor(src: string | undefined, override: string | undefined): stri
 export function SimulatorViewport(props: SimulatorViewportProps) {
   const { profile, hostname, className, style, onLoad, onError } = props;
   const viewportRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const detachScrollRef = useRef<(() => void) | null>(null);
   const trackerRef = useRef<ChromeScrollTracker>({ kind: "expanded", downwardPx: 0 });
@@ -36,6 +39,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   const [chromeState, setChromeState] = useState<ChromeState>("expanded");
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
   const iframeSrc = "src" in props ? props.src : undefined;
+  const [refractionSafeSrc, setRefractionSafeSrc] = useState<string | null>(null);
 
   useEffect(() => {
     const node = viewportRef.current;
@@ -101,16 +105,33 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   }, [iframeSrc, profile.browser.chrome, profile.browser.id, profile.selection.chrome, status]);
 
   const rect = getContentRect({ profile, chromeState });
+  const safariGlass = useSafariGlass({
+    screenRef,
+    contentRef,
+    enabled: profile.browser.appearance === "ios26-safari" && profile.selection.chrome !== "off" && (iframeSrc === undefined || refractionSafeSrc === iframeSrc),
+    transitionMs: profile.browser.chrome.kind === "scroll-linked" ? profile.browser.chrome.transitionMs : 0,
+    stateKey: `${profile.browser.id}-${chromeState}`,
+  });
   const screenStyle = { width: profile.device.screen.width, height: profile.device.screen.height, borderRadius: profile.device.cornerRadiusPx, transform: `scale(${scale})` };
-  const contentStyle = { left: rect.x, top: rect.y, width: rect.width, height: rect.height, transitionDuration: `${profile.browser.chrome.kind === "scroll-linked" ? profile.browser.chrome.transitionMs : 0}ms` };
+  const contentStyle = { left: rect.x, top: rect.y, width: rect.width, height: rect.height, transitionDuration: `${profile.browser.chrome.kind === "scroll-linked" ? profile.browser.chrome.transitionMs : 0}ms`, ...(safariGlass ? { filter: `url(#${safariGlass.id})` } : {}) };
   const rootClassName = ["uxqa-viewport", className].filter(Boolean).join(" ");
 
   return (
     <div ref={viewportRef} className={rootClassName} style={style}>
-      <div className="uxqa-screen" style={screenStyle} data-device={profile.device.id}>
+      <div ref={screenRef} className="uxqa-screen" style={screenStyle} data-device={profile.device.id} data-glass-refraction={safariGlass ? "active" : "fallback"}>
+        {safariGlass ? <SafariGlassFilter frame={safariGlass} /> : null}
         <BrowserChrome profile={profile} chromeState={chromeState} hostname={addressFor(props.src, hostname)} />
-        <div className="uxqa-content" style={contentStyle}>
-          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => { setStatus("loaded"); onLoad?.(event); }} /> : <div className="uxqa-react-content">{props.content}</div>}
+        <div ref={contentRef} className="uxqa-content" style={contentStyle}>
+          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => {
+            setStatus("loaded");
+            try {
+              void event.currentTarget.contentWindow?.document.documentElement;
+              setRefractionSafeSrc(props.src);
+            } catch {
+              setRefractionSafeSrc(null);
+            }
+            onLoad?.(event);
+          }} /> : <div className="uxqa-react-content">{props.content}</div>}
         </div>
       </div>
       {"src" in props ? <span className={`uxqa-status uxqa-status--${status}`} role="status">{status === "loading" ? "Loading preview" : status === "loaded" ? "Preview loaded" : "Preview failed to load"}</span> : null}

@@ -133,12 +133,14 @@ describe("BrowserChrome", () => {
     expect(getByText(hostname)).toHaveClass("uxqa-hostname");
   });
 
-  it("keeps the iOS shelf, motion, fallback, and platform fidelity CSS contracts", () => {
+  it("keeps the iOS glass, motion, fallback, and platform fidelity CSS contracts", () => {
     const css = readFileSync(join(process.cwd(), "src/styles.css"), "utf8");
 
-    expect(css).toContain('.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="expanded"]::before { height: 97px; }');
+    expect(css).not.toContain('.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="expanded"]::before');
+    expect(css).toContain("background: rgb(35 39 47 / 22%)");
+    expect(css).toContain('.uxqa-screen[data-glass-refraction="fallback"] .uxqa-ios26-address');
+    expect(css).toContain("backdrop-filter: blur(12px) saturate(145%) brightness(1.04)");
     expect(css).toContain("transition: height 420ms cubic-bezier(.22, 1, .36, 1)");
-    expect(css).toContain("@supports not (backdrop-filter: blur(1px))");
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
     for (const selector of [
       '.uxqa-browser-chrome[data-appearance="ios26-safari"]::before',
