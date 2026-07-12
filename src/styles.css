@@ -28,9 +28,12 @@
   min-width: 0;
   min-height: var(--uxqa-min-height, 480px);
   overflow: hidden;
+  overscroll-behavior: contain;
   border-radius: var(--uxqa-radius, 16px);
   background: var(--uxqa-canvas-background, #eef1f5);
+  outline: none;
 }
+.uxqa-viewport:focus-visible { box-shadow: inset 0 0 0 2px rgb(36 88 211 / 45%); }
 .uxqa-screen {
   position: absolute;
   overflow: hidden;
@@ -39,8 +42,8 @@
   box-shadow: var(--uxqa-shadow, 0 20px 60px rgb(18 28 45 / 18%));
 }
 .uxqa-content { position: absolute; overflow: hidden; transition-property: top, height; transition-timing-function: ease; }
-.uxqa-frame, .uxqa-react-content { width: 100%; height: 100%; border: 0; background: #fff; }
-.uxqa-react-content { overflow: auto; }
+.uxqa-frame, .uxqa-react-content { width: 100%; height: 100%; border: 0; background: #fff; overscroll-behavior: contain; }
+.uxqa-react-content { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .uxqa-browser-chrome { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; user-select: none; color: #121317; font: 600 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 .uxqa-browser-chrome svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .uxqa-chrome-status { position: absolute; inset: 0 0 auto; z-index: 4; display: flex; box-sizing: border-box; align-items: center; justify-content: space-between; padding: 0 18px; background: rgb(247 247 249 / 96%); font-size: 12px; font-weight: 700; }
@@ -125,7 +128,7 @@
   bottom: 0;
   left: 0;
   height: 192px;
-  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%) 72%, #000);
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%) 72%, rgb(0 0 0 / 88%));
   content: "";
   transition: height 420ms cubic-bezier(.22, 1, .36, 1);
 }

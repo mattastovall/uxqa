@@ -6,17 +6,17 @@ const REPOSITORY = "https://github.com/mattastovall/uxqa";
 type CopyState = { kind: "idle" } | { kind: "copied" } | { kind: "failed" };
 
 function PreviewPage() {
-  const [checked, setChecked] = useState(false);
+  const [saved, setSaved] = useState(false);
   return (
     <div className="preview-page">
-      <div className="preview-nav"><span className="preview-mark">north/</span><span>Menu</span></div>
-      <div className="preview-hero">
-        <p className="preview-kicker">Preview content</p>
-        <h2>See the page<br />in context.</h2>
-        <p>Switch device and browser profiles without leaving your review flow.</p>
-        <button type="button" onClick={() => setChecked((value) => !value)}>{checked ? "Saved" : "Save route"}</button>
-      </div>
-      <div className="preview-footer"><span>42.3601° N</span><span>Scroll to explore</span></div>
+      <header className="preview-nav"><span className="preview-mark">north/</span><span>Menu</span></header>
+      <main className="preview-main">
+        <p className="preview-kicker">Field notes</p>
+        <h2>Routes beyond the last stop.</h2>
+        <p className="preview-lede">Day trips reachable by train — no car needed.</p>
+        <button type="button" onClick={() => setSaved((value) => !value)}>{saved ? "Saved" : "Save route"}</button>
+      </main>
+      <footer className="preview-footer"><span>42.3601° N</span><span>Scroll</span></footer>
     </div>
   );
 }
@@ -42,7 +42,7 @@ async function writeClipboard(text: string): Promise<boolean> {
   }
 }
 
-function CopyBlock({ label, code }: Readonly<{ label: string; code: string }>) {
+function CopyBlock({ label, code, compact }: Readonly<{ label: string; code: string; compact?: boolean }>) {
   const [state, setState] = useState<CopyState>({ kind: "idle" });
   const timer = useRef<number | undefined>(undefined);
 
@@ -54,9 +54,14 @@ function CopyBlock({ label, code }: Readonly<{ label: string; code: string }>) {
 
   const feedback = state.kind === "copied" ? "Copied" : state.kind === "failed" ? "Copy failed" : "Copy";
   return (
-    <div className="code-block">
-      <div className="code-head"><span>{label}</span><button type="button" onClick={copy} aria-label={`Copy ${label}`}>{feedback}</button></div>
-      <pre><code>{code}</code></pre>
+    <div className={compact ? "code-block code-block--compact" : "code-block"}>
+      {!compact && (
+        <div className="code-head"><span>{label}</span><button type="button" onClick={copy} aria-label={`Copy ${label}`}>{feedback}</button></div>
+      )}
+      <div className={compact ? "code-body" : undefined}>
+        <pre><code>{code}</code></pre>
+        {compact && <button type="button" className="code-copy" onClick={copy} aria-label={`Copy ${label}`}>{feedback}</button>}
+      </div>
       <span className="sr-only" aria-live="polite">{state.kind === "idle" ? "" : feedback}</span>
     </div>
   );
@@ -67,10 +72,10 @@ function SectionHead({ title, children }: Readonly<{ title: string; children?: R
 }
 
 const startSteps = [
-  { label: "1 · Install", code: "npm install uxqa" },
-  { label: "2 · Import", code: 'import { BrowserSimulator } from "uxqa";\nimport "uxqa/styles.css";' },
-  { label: "3 · Render", code: '<BrowserSimulator\n  className="preview"\n  content={<YourPage />}\n  hostname="your-app.dev"\n/>' },
-  { label: "4 · Size", code: '.preview {\n  height: min(760px, 80vh);\n}\n\n.preview .uxqa-viewport {\n  height: 100%;\n}' },
+  { label: "Install", code: "npm install uxqa" },
+  { label: "Import", code: 'import { BrowserSimulator } from "uxqa";\nimport "uxqa/styles.css";' },
+  { label: "Render", code: '<BrowserSimulator\n  className="preview"\n  content={<YourPage />}\n  hostname="your-app.dev"\n/>' },
+  { label: "Size", code: '.preview {\n  height: min(760px, 80vh);\n}\n\n.preview .uxqa-viewport {\n  height: 100%;\n}' },
 ] as const;
 
 function GettingStartedCarousel() {
@@ -81,30 +86,30 @@ function GettingStartedCarousel() {
 
   return (
     <div className="start-carousel" id="start">
-      <div className="start-carousel-head">
-        <div>
-          <p className="start-carousel-kicker">Getting started</p>
-          <p className="start-carousel-copy">Install, import, render, and size the simulator in four steps.</p>
+      <p className="start-carousel-kicker">Getting started</p>
+      <div className="start-carousel-panel">
+        <div className="start-carousel-toolbar">
+          <div className="start-tabs" role="tablist" aria-label="Getting started steps">
+            {startSteps.map((item, stepIndex) => (
+              <button
+                key={item.label}
+                type="button"
+                role="tab"
+                aria-selected={stepIndex === index}
+                className={stepIndex === index ? "is-active" : undefined}
+                onClick={() => setIndex(stepIndex)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <div className="start-carousel-nav" aria-label="Step navigation">
+            <button type="button" onClick={prev} aria-label="Previous step">←</button>
+            <span aria-live="polite">{index + 1}/{startSteps.length}</span>
+            <button type="button" onClick={next} aria-label="Next step">→</button>
+          </div>
         </div>
-        <div className="start-carousel-nav" aria-label="Getting started steps">
-          <button type="button" onClick={prev} aria-label="Previous step">←</button>
-          <span aria-live="polite">{index + 1} / {startSteps.length}</span>
-          <button type="button" onClick={next} aria-label="Next step">→</button>
-        </div>
-      </div>
-      <CopyBlock label={step.label} code={step.code} />
-      <div className="start-carousel-dots" role="tablist" aria-label="Choose a step">
-        {startSteps.map((item, stepIndex) => (
-          <button
-            key={item.label}
-            type="button"
-            role="tab"
-            aria-selected={stepIndex === index}
-            aria-label={item.label}
-            className={stepIndex === index ? "is-active" : undefined}
-            onClick={() => setIndex(stepIndex)}
-          />
-        ))}
+        <CopyBlock label={step.label} code={step.code} compact />
       </div>
     </div>
   );

@@ -44,31 +44,85 @@ h1 { max-width: 760px; margin: 0; font-size: clamp(3.6rem, 6.6vw, 7.4rem); font-
 .button-primary { border-color: #e8e8e4; background: #e8e8e4; color: #0a0a0a; }
 .button-primary:hover { background: #fff; }
 .button-secondary:hover { background: #161616; }
-.start-carousel-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 14px; }
-.start-carousel-kicker { margin: 0 0 6px; color: #666; font: .75rem DM Mono, monospace; text-transform: uppercase; letter-spacing: .08em; }
-.start-carousel-copy { margin: 0; max-width: 36ch; color: #888; font-size: .95rem; }
-.start-carousel-nav { display: flex; align-items: center; gap: 10px; color: #666; font: .75rem DM Mono, monospace; white-space: nowrap; flex-shrink: 0; }
-.start-carousel-nav button { min-width: 44px; min-height: 44px; border: 1px solid #333; background: transparent; color: #ccc; cursor: pointer; font: inherit; }
-.start-carousel-nav button:hover { border-color: #666; color: #fff; }
-.start-carousel-dots { display: flex; gap: 8px; margin-top: 12px; }
-.start-carousel-dots button { width: 28px; min-height: 44px; padding: 20px 0; border: 0; background: transparent; cursor: pointer; position: relative; }
-.start-carousel-dots button::after { content: ""; position: absolute; inset: 20px 0; background: #333; }
-.start-carousel-dots button.is-active::after { background: #e8e8e4; }
+.start-carousel-kicker { margin: 0 0 12px; color: #666; font: .75rem DM Mono, monospace; text-transform: uppercase; letter-spacing: .08em; }
+.start-carousel-panel { border: 1px solid #2a2a2a; background: #111; }
+.start-carousel-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 12px;
+  border-bottom: 1px solid #2a2a2a;
+}
+.start-tabs { display: flex; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.start-tabs::-webkit-scrollbar { display: none; }
+.start-tabs button {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-right: 1px solid #2a2a2a;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  font: .72rem DM Mono, monospace;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: color 160ms ease, background 160ms ease;
+}
+.start-tabs button:hover { color: #ccc; }
+.start-tabs button.is-active { background: #1a1a1a; color: #fff; }
+.start-carousel-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  color: #555;
+  font: .72rem DM Mono, monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.start-carousel-nav button {
+  min-width: 36px;
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font: inherit;
+}
+.start-carousel-nav button:hover { color: #fff; }
+.code-block--compact { border: 0; background: transparent; }
+.code-body { display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; }
+.code-body pre { flex: 1; min-width: 0; min-height: 0; margin: 0; padding: 0; overflow: auto; color: #e8e8e4; font: .84rem/1.65 DM Mono, monospace; -webkit-overflow-scrolling: touch; }
+.code-copy {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font: .72rem DM Mono, monospace;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.code-copy:hover { border-color: #666; color: #fff; }
 .hero-demo { min-width: 0; padding: 14px; border: 1px solid #2a2a2a; background: #111; box-shadow: 0 30px 90px rgb(0 0 0 / 45%); }
 .demo-label { display: flex; justify-content: space-between; gap: 12px; padding: 0 2px 12px; color: #666; font: .75rem DM Mono, monospace; letter-spacing: .08em; }
 .simulator-shell { height: min(680px, 72vh); min-height: 520px; }
 .simulator-shell .uxqa-simulator, .simulator-shell .uxqa-viewport { height: 100%; }
 .hero-demo .uxqa-simulator { --uxqa-control-color: #ccc; --uxqa-control-background: #161616; --uxqa-canvas-background: #141414; --uxqa-radius: 2px; --uxqa-shadow: 0 14px 50px rgb(0 0 0 / 50%); }
 .hero-demo .uxqa-control select { border-color: #333; border-radius: 2px; }
-.preview-page { display: flex; min-height: 100%; flex-direction: column; color: #111; background: #e8e8e4; font-family: Manrope, sans-serif; }
-.preview-nav { display: flex; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #ccc; font: 600 11px DM Mono, monospace; text-transform: uppercase; }
-.preview-mark { color: #444; font-size: 16px; text-transform: lowercase; }
-.preview-hero { display: grid; flex: 1; align-content: center; padding: 38px 24px; background: linear-gradient(145deg, #f0f0ec, #d8d8d4); }
-.preview-kicker { color: #666; font: 12px DM Mono, monospace; letter-spacing: .12em; }
-.preview-hero h2 { margin: 14px 0; color: #111; font-size: clamp(42px, 15vw, 84px); font-weight: 500; line-height: .84; letter-spacing: -.08em; }
-.preview-hero p:not(.preview-kicker) { max-width: 290px; font-size: 14px; color: #444; }
-.preview-hero button { width: fit-content; margin-top: 16px; padding: 11px 14px; border: 0; background: #111; color: #e8e8e4; font: 600 12px DM Mono, monospace; text-transform: uppercase; }
-.preview-footer { display: flex; justify-content: space-between; padding: 16px 20px; color: #666; font: 11px DM Mono, monospace; text-transform: uppercase; }
+.preview-page { display: flex; min-height: 100%; flex-direction: column; color: #1a1a1a; background: #f5f5f2; font-family: Manrope, sans-serif; }
+.preview-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #ddd; font: 500 10px DM Mono, monospace; text-transform: uppercase; letter-spacing: .08em; }
+.preview-mark { font-size: 15px; font-weight: 600; letter-spacing: -.04em; text-transform: lowercase; color: #1a1a1a; }
+.preview-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 36px; }
+.preview-kicker { margin: 0 0 10px; color: #888; font: 500 10px DM Mono, monospace; text-transform: uppercase; letter-spacing: .1em; }
+.preview-main h2 { margin: 0 0 12px; max-width: 14ch; font-size: 28px; font-weight: 500; line-height: 1.12; letter-spacing: -.03em; }
+.preview-lede { margin: 0 0 22px; max-width: 30ch; font-size: 14px; line-height: 1.5; color: #555; }
+.preview-main button { width: fit-content; padding: 12px 18px; border: 1px solid #1a1a1a; background: #1a1a1a; color: #f5f5f2; font: 500 11px DM Mono, monospace; text-transform: uppercase; letter-spacing: .06em; cursor: pointer; }
+.preview-footer { display: flex; justify-content: space-between; padding: 14px 20px; border-top: 1px solid #ddd; color: #888; font: 500 10px DM Mono, monospace; text-transform: uppercase; letter-spacing: .06em; }
 .section { padding: clamp(86px, 11vw, 150px) 0; border-top: 1px solid #2a2a2a; }
 .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: start; margin-bottom: 58px; }
 .section-head h2 { margin: 0; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 500; line-height: .98; letter-spacing: -.06em; text-wrap: balance; }
@@ -131,9 +185,15 @@ footer p { margin: 0; } footer > a:last-child { justify-self: end; }
   .hero-demo .uxqa-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .hero-demo .uxqa-control select { width: 100%; min-height: 44px; font-size: 16px; }
   .hero-demo .uxqa-control--checkbox { grid-column: 1 / -1; justify-self: start; min-height: 44px; }
-  .start-carousel-head { flex-direction: column; gap: 16px; }
-  .start-carousel-nav { align-self: stretch; justify-content: space-between; }
-  .start-carousel-copy { max-width: none; }
+  .start-carousel-toolbar { flex-direction: column; align-items: stretch; }
+  .start-carousel-nav { display: none; }
+  .start-tabs { border-bottom: 1px solid #2a2a2a; }
+  .start-tabs button { flex: 1; min-width: 0; padding: 0 8px; border-right: 1px solid #2a2a2a; border-bottom: 0; font-size: .65rem; }
+  .start-tabs button:last-child { border-right: 0; }
+  .start-tabs button.is-active { box-shadow: inset 0 -2px 0 #fff; background: #1a1a1a; }
+  .code-body { flex-direction: column; padding: 16px; }
+  .code-body pre { min-height: 0; padding: 0; font-size: .8rem; }
+  .code-copy { align-self: flex-start; min-height: 44px; }
   pre { padding: 16px; font-size: .75rem; min-height: 100px; }
   .section { padding: 56px 0; }
   .section-head { display: block; margin-bottom: 32px; }

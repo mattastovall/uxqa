@@ -4,6 +4,7 @@ import { SafariGlassFilter, useSafariGlass } from "./SafariGlass.js";
 import { calculateScale } from "./scale.js";
 import { getContentRect, type ChromeState, type ResolvedSimulatorProfile } from "./profiles.js";
 import { createScrollTelemetry, reduceChromeScroll, type ChromeScrollTracker } from "./scroll.js";
+import { handleViewportWheel } from "./viewportInteraction.js";
 
 export type SimulatorIframeProps = Omit<IframeHTMLAttributes<HTMLIFrameElement>, "src" | "title" | "children" | "className" | "style" | "onLoad" | "onError">;
 export type SimulatorSource =
@@ -32,6 +33,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   const screenRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const reactContentRef = useRef<HTMLDivElement>(null);
   const detachScrollRef = useRef<(() => void) | null>(null);
   const trackerRef = useRef<ChromeScrollTracker>({ kind: "expanded", downwardPx: 0 });
   const lastScrollYRef = useRef(0);
@@ -75,34 +77,61 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   useEffect(() => {
     detachScrollRef.current?.();
     detachScrollRef.current = null;
-    if (status !== "loaded" || iframeSrc === undefined || profile.selection.chrome !== "auto" || profile.browser.chrome.kind !== "scroll-linked") return;
-    const frame = frameRef.current;
-    if (!frame) return;
-    try {
-      const target = frame.contentWindow;
-      if (!target) return;
-      void target.document.documentElement;
-      const handleScroll = () => {
-        const scrollY = Math.max(0, target.scrollY);
-        const root = target.document.documentElement;
-        const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
-        const telemetry = createScrollTelemetry({ scrollY, scrollProgress: maxScroll > 0 ? scrollY / maxScroll : 0, deltaY: scrollY - lastScrollYRef.current, canScroll: maxScroll > 0 });
-        lastScrollYRef.current = scrollY;
-        trackerRef.current = reduceChromeScroll({ tracker: trackerRef.current, telemetry, behavior: profile.browser.chrome });
-        setChromeState(trackerRef.current.kind);
-      };
-      target.addEventListener("scroll", handleScroll, { passive: true });
-      const detach = () => target.removeEventListener("scroll", handleScroll);
-      detachScrollRef.current = detach;
-      return () => {
-        detach();
-        if (detachScrollRef.current === detach) detachScrollRef.current = null;
-      };
-    } catch {
-      trackerRef.current = { kind: "expanded", downwardPx: 0 };
-      setChromeState("expanded");
+    if (profile.selection.chrome !== "auto" || profile.browser.chrome.kind !== "scroll-linked") return;
+
+    const applyScroll = (scrollY: number, scrollHeight: number, clientHeight: number) => {
+      const maxScroll = Math.max(0, scrollHeight - clientHeight);
+      const telemetry = createScrollTelemetry({ scrollY, scrollProgress: maxScroll > 0 ? scrollY / maxScroll : 0, deltaY: scrollY - lastScrollYRef.current, canScroll: maxScroll > 0 });
+      lastScrollYRef.current = scrollY;
+      trackerRef.current = reduceChromeScroll({ tracker: trackerRef.current, telemetry, behavior: profile.browser.chrome });
+      setChromeState(trackerRef.current.kind);
+    };
+
+    if (iframeSrc !== undefined) {
+      if (status !== "loaded") return;
+      const frame = frameRef.current;
+      if (!frame) return;
+      try {
+        const target = frame.contentWindow;
+        if (!target) return;
+        void target.document.documentElement;
+        const handleScroll = () => {
+          const root = target.document.documentElement;
+          applyScroll(Math.max(0, target.scrollY), root.scrollHeight, root.clientHeight);
+        };
+        target.addEventListener("scroll", handleScroll, { passive: true });
+        const detach = () => target.removeEventListener("scroll", handleScroll);
+        detachScrollRef.current = detach;
+        return () => {
+          detach();
+          if (detachScrollRef.current === detach) detachScrollRef.current = null;
+        };
+      } catch {
+        trackerRef.current = { kind: "expanded", downwardPx: 0 };
+        setChromeState("expanded");
+      }
+      return;
     }
+
+    const node = reactContentRef.current;
+    if (!node) return;
+    const handleScroll = () => applyScroll(node.scrollTop, node.scrollHeight, node.clientHeight);
+    node.addEventListener("scroll", handleScroll, { passive: true });
+    const detach = () => node.removeEventListener("scroll", handleScroll);
+    detachScrollRef.current = detach;
+    return () => {
+      detach();
+      if (detachScrollRef.current === detach) detachScrollRef.current = null;
+    };
   }, [iframeSrc, profile.browser.chrome, profile.browser.id, profile.selection.chrome, status]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const onWheel = (event: WheelEvent) => handleViewportWheel(viewport, reactContentRef.current, event);
+    viewport.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    return () => viewport.removeEventListener("wheel", onWheel, { capture: true });
+  }, []);
 
   const rect = getContentRect({ profile, chromeState });
   const safariGlass = useSafariGlass({
@@ -117,7 +146,14 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   const rootClassName = ["uxqa-viewport", className].filter(Boolean).join(" ");
 
   return (
-    <div ref={viewportRef} className={rootClassName} style={style}>
+    <div
+      ref={viewportRef}
+      className={rootClassName}
+      style={style}
+      tabIndex={-1}
+      aria-label="Device preview"
+      onPointerDown={() => viewportRef.current?.focus({ preventScroll: true })}
+    >
       <div ref={screenRef} className="uxqa-screen" style={screenStyle} data-device={profile.device.id} data-glass-refraction={safariGlass ? "active" : "fallback"}>
         {safariGlass ? <SafariGlassFilter frame={safariGlass} /> : null}
         <BrowserChrome profile={profile} chromeState={chromeState} hostname={addressFor(props.src, hostname)} />
@@ -131,7 +167,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
               setRefractionSafeSrc(null);
             }
             onLoad?.(event);
-          }} /> : <div className="uxqa-react-content">{props.content}</div>}
+          }} /> : <div ref={reactContentRef} className="uxqa-react-content">{props.content}</div>}
         </div>
       </div>
       {"src" in props ? <span className={`uxqa-status uxqa-status--${status}`} role="status">{status === "loading" ? "Loading preview" : status === "loaded" ? "Preview loaded" : "Preview failed to load"}</span> : null}

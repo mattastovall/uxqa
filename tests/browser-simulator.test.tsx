@@ -77,6 +77,17 @@ describe("BrowserSimulator", () => {
     expect(container.querySelector(".uxqa-windows-chrome")).toBeInTheDocument();
   });
 
+  it("collapses scroll-linked chrome for React content", () => {
+    const Tall = () => <div style={{ height: 1200 }}>Tall preview</div>;
+    const { container } = render(<BrowserSimulator content={<Tall />} defaultSelection={{ deviceId: "iphone-16", browserId: "safari", chrome: "auto" }} controls={false} />);
+    const scroller = container.querySelector(".uxqa-react-content") as HTMLDivElement;
+    Object.defineProperty(scroller, "scrollHeight", { value: 1200, configurable: true });
+    Object.defineProperty(scroller, "clientHeight", { value: 600, configurable: true });
+    scroller.scrollTop = 80;
+    fireEvent.scroll(scroller);
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-chrome-state", "collapsed");
+  });
+
   it("collapses scroll-linked chrome without painting the expanded toolbar", () => {
     const { container } = render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "pixel", browserId: "chrome", chrome: "auto" }} />);
     const frame = screen.getByTitle("Website preview") as HTMLIFrameElement;
@@ -131,6 +142,28 @@ describe("BrowserSimulator", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Preview loaded");
     rerender(<BrowserSimulator src="/second" />);
     expect(screen.getByRole("status")).toHaveTextContent("Loading preview");
+  });
+
+  it("captures wheel events inside the viewport", () => {
+    const onWheel = vi.fn();
+    const { container } = render(
+      <div onWheel={onWheel}>
+        <BrowserSimulator content={<div style={{ height: 1200 }}>Tall preview</div>} controls={false} />
+      </div>,
+    );
+    const viewport = container.querySelector(".uxqa-viewport");
+    expect(viewport).not.toBeNull();
+    if (!viewport) return;
+    fireEvent.wheel(viewport, { deltaY: 40 });
+    expect(onWheel).not.toHaveBeenCalled();
+  });
+
+  it("focuses the viewport when pointer down occurs inside it", () => {
+    const { container } = render(<BrowserSimulator content={<button type="button">Inside preview</button>} controls={false} />);
+    const viewport = container.querySelector(".uxqa-viewport") as HTMLDivElement;
+    const focus = vi.spyOn(viewport, "focus");
+    fireEvent.pointerDown(viewport);
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true });
   });
 
   it("gives standalone SimulatorViewport the default styling root", () => {
