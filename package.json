@@ -1,6 +1,6 @@
 {
   "name": "uxqa",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Calibrated device and browser simulation for React applications.",
   "license": "MIT",
   "repository": {
@@ -28,8 +28,13 @@
     },
     "./styles.css": "./dist/styles.css"
   },
-  "files": ["dist"],
-  "workspaces": ["demo", "site"],
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "demo",
+    "site"
+  ],
   "scripts": {
     "build": "tsup",
     "check": "npm run lint && npm run typecheck && npm test -- --run && npm run build && npm run verify:package",

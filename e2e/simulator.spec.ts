@@ -40,3 +40,23 @@ test("keyboard focus reaches every default control", async ({ page }) => {
     await page.keyboard.press("Tab");
   }
 });
+
+test("ships the complete custom chrome and keeps its default appearance stable", async ({ page }) => {
+  const example = page.locator("section").first();
+  const chrome = example.locator('.uxqa-browser-chrome[data-appearance="ios26-safari"]');
+
+  await expect(chrome.locator('[data-icon="signal"]')).toBeVisible();
+  await expect(chrome.locator('[data-icon="wifi"]')).toBeVisible();
+  await expect(chrome.locator(".uxqa-ios26-page-menu")).toBeVisible();
+  await expect(chrome.locator(".uxqa-ios26-reload")).toBeVisible();
+  await expect(example.locator(".uxqa-screen")).toHaveScreenshot("default-ios26-safari.png", {
+    animations: "disabled",
+    maxDiffPixels: 100,
+  });
+  await example.frameLocator("iframe").locator("html").evaluate((element) => element.ownerDocument.defaultView?.scrollTo(0, 180));
+  await expect(chrome).toHaveAttribute("data-chrome-state", "collapsed");
+  await expect(example.locator(".uxqa-screen")).toHaveScreenshot("collapsed-ios26-safari.png", {
+    animations: "disabled",
+    maxDiffPixels: 100,
+  });
+});
