@@ -62,8 +62,8 @@ function CopyBlock({ label, code }: Readonly<{ label: string; code: string }>) {
   );
 }
 
-function SectionHead({ eyebrow, title, children }: Readonly<{ eyebrow: string; title: string; children?: ReactNode }>) {
-  return <div className="section-head"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2>{children}</div>;
+function SectionHead({ title, children }: Readonly<{ title: string; children?: ReactNode }>) {
+  return <div className="section-head"><h2>{title}</h2>{children}</div>;
 }
 
 const values = [
@@ -88,7 +88,6 @@ export function App() {
       <main id="main">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <p className="eyebrow"><span className="status-dot" /> React preview component · MIT</p>
             <h1>See the page your users actually see.</h1>
             <p className="hero-lede">Put your React UI inside calibrated device and browser chrome. Review responsive work with the context that screenshots leave out.</p>
             <div className="hero-actions"><a className="button button-primary" href="#start">Get started</a><a className="button button-secondary" href={REPOSITORY}>View on GitHub <span aria-hidden="true">↗</span></a></div>
@@ -101,7 +100,7 @@ export function App() {
         </section>
 
         <section className="audience section" id="use-cases">
-          <SectionHead eyebrow="Built for the review" title="One preview. A clearer conversation."><p>uxqa gives the people building an interface and the people reviewing it the same frame of reference.</p></SectionHead>
+          <SectionHead title="One preview. A clearer conversation."><p>uxqa gives the people building an interface and the people reviewing it the same frame of reference.</p></SectionHead>
           <div className="audience-grid">
             <article><span className="article-number">01 / BUILD</span><h3>For frontend engineers</h3><p>Catch cramped controls, browser chrome collisions, and layouts that only work at a convenient desktop width before review.</p><ul><li>Drop into an existing React app</li><li>Control profile state from your own UI</li><li>Render React content or an iframe</li></ul></article>
             <article><span className="article-number">02 / REVIEW</span><h3>For design and QA teams</h3><p>Review a working interface in named viewport conditions without passing around a folder of disconnected screenshots.</p><ul><li>Switch device and browser profiles live</li><li>Interact, scroll, and inspect real states</li><li>Use a shared profile name in feedback</li></ul></article>
@@ -109,12 +108,12 @@ export function App() {
         </section>
 
         <section className="values section" id="features">
-          <SectionHead eyebrow="What it gives you" title="Context without the theater."><p>uxqa is a preview component. It does its job well and leaves automated tests and real-device validation to the tools made for them.</p></SectionHead>
+          <SectionHead title="Context without the theater."><p>uxqa is a preview component. It does its job well and leaves automated tests and real-device validation to the tools made for them.</p></SectionHead>
           <div className="value-grid">{values.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
         </section>
 
         <section className="start section" id="start">
-          <SectionHead eyebrow="Four steps" title="Running in under a minute."><p>Install the package, import the public component and stylesheet, then give its container a height.</p></SectionHead>
+          <SectionHead title="Running in under a minute."><p>Install the package, import the public component and stylesheet, then give its container a height.</p></SectionHead>
           <div className="code-grid">
             <CopyBlock label="1 · Install" code="npm install uxqa" />
             <CopyBlock label="2 · Import" code={'import { BrowserSimulator } from "uxqa";\nimport "uxqa/styles.css";'} />
@@ -124,13 +123,13 @@ export function App() {
         </section>
 
         <section className="proof section">
-          <SectionHead eyebrow="Package facts" title="Small API. Useful range." />
+          <SectionHead title="Small API. Useful range." />
           <div className="fact-row"><div><strong>06</strong><span>device profiles</span></div><div><strong>07</strong><span>browser profiles</span></div><div><strong>02</strong><span>content modes</span></div><div><strong>∞</strong><span>custom profiles</span></div></div>
           <p className="compatibility">Works with <strong>Vite</strong>, <strong>Next.js App Router</strong>, and <strong>Astro React</strong>. Supports Safari, Chrome, and compatible in-app browser profiles.</p>
         </section>
 
         <section className="faq section" id="faq">
-          <SectionHead eyebrow="Straight answers" title="What uxqa is, and isn't." />
+          <SectionHead title="What uxqa is, and isn't." />
           <div className="faq-list">
             <details><summary>Is uxqa a real device emulator?</summary><p>No. It is a React preview component that models viewport and browser chrome. Use physical devices and platform emulators for final device validation.</p></details>
             <details><summary>Does it run automated tests?</summary><p>No. uxqa does not replace a test runner, visual regression service, or screenshot cloud. It makes interactive review easier.</p></details>
@@ -139,7 +138,7 @@ export function App() {
           </div>
         </section>
 
-        <section className="final-cta section"><p className="eyebrow">Ready to review?</p><h2>Put the viewport back in context.</h2><div className="hero-actions"><a className="button button-primary" href="#start">Install uxqa</a><a className="button button-secondary" href={REPOSITORY}>Read the source <span aria-hidden="true">↗</span></a></div></section>
+        <section className="final-cta section"><h2>Put the viewport back in context.</h2><div className="hero-actions"><a className="button button-primary" href="#start">Install uxqa</a><a className="button button-secondary" href={REPOSITORY}>Read the source <span aria-hidden="true">↗</span></a></div></section>
       </main>
       <footer><a className="wordmark" href="#top"><span>ux</span>qa<span className="mark-dot">.</span></a><p>React device and browser previews. MIT licensed.</p><a href={REPOSITORY}>GitHub ↗</a></footer>
     </>

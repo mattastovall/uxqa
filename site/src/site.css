@@ -19,8 +19,6 @@ button, select { font: inherit; }
 .site-header a:hover { color: #fff; }
 .github-link { justify-self: end; }
 .hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr); gap: clamp(40px, 7vw, 100px); align-items: center; min-height: calc(100vh - 77px); padding: 68px 0 86px; }
-.eyebrow { margin: 0 0 22px; color: #c5ff35; font: 500 .76rem DM Mono, monospace; letter-spacing: .12em; text-transform: uppercase; }
-.status-dot { display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: #c5ff35; box-shadow: 0 0 14px #c5ff35; }
 h1 { max-width: 760px; margin: 0; font-size: clamp(3.6rem, 6.6vw, 7.4rem); font-weight: 500; line-height: .92; letter-spacing: -.075em; }
 .hero-lede { max-width: 610px; margin: 30px 0; color: #b8bbb3; font-size: clamp(1rem, 1.35vw, 1.2rem); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
