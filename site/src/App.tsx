@@ -72,7 +72,7 @@ const values = [
   ["03", "Framework-ready", "Use uxqa with React 18 or 19 in Vite, Next.js App Router, or Astro React."],
   ["04", "Composable by default", "Choose controlled or uncontrolled state, add custom profiles, and tune the appearance with CSS variables."],
   ["05", "Keep content interactive", "Render a React node directly or load a page in an iframe. Forms, links, and scroll stay usable."],
-  ["06", "Honest cross-origin fallback", "Some sites block iframe embedding. uxqa reports the error instead of pretending the preview loaded."],
+  ["06", "Clear iframe boundaries", "Same-origin frames can drive scroll-linked chrome. Cross-origin pages can render when their embedding policy allows it, but their scroll position stays private."],
 ] as const;
 
 export function App() {
@@ -118,8 +118,8 @@ export function App() {
           <div className="code-grid">
             <CopyBlock label="1 · Install" code="npm install uxqa" />
             <CopyBlock label="2 · Import" code={'import { BrowserSimulator } from "uxqa";\nimport "uxqa/styles.css";'} />
-            <CopyBlock label="3 · Render" code={'<BrowserSimulator\n  content={<YourPage />}\n  hostname="your-app.dev"\n/>'} />
-            <CopyBlock label="4 · Size" code={'.preview {\n  height: min(760px, 80vh);\n}'} />
+            <CopyBlock label="3 · Render" code={'<BrowserSimulator\n  className="preview"\n  content={<YourPage />}\n  hostname="your-app.dev"\n/>'} />
+            <CopyBlock label="4 · Size" code={'.preview {\n  height: min(760px, 80vh);\n}\n\n.preview .uxqa-viewport {\n  height: 100%;\n}'} />
           </div>
         </section>
 
