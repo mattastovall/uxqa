@@ -1,6 +1,16 @@
 {
   "name": "uxqa",
   "version": "0.0.0",
+  "description": "Calibrated device and browser simulation for React applications.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattastovall/uxqa.git"
+  },
+  "homepage": "https://github.com/mattastovall/uxqa#readme",
+  "bugs": {
+    "url": "https://github.com/mattastovall/uxqa/issues"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -17,12 +27,17 @@
   "workspaces": ["demo"],
   "scripts": {
     "build": "tsup",
+    "check": "npm run lint && npm run typecheck && npm test -- --run && npm run build && npm run verify:package",
     "demo:build": "npm run build && npm run build --workspace demo",
     "demo:dev": "npm run build && npm run dev --workspace demo",
     "lint": "eslint .",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:package": "node scripts/verify-package.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "react": ">=18 <20",
