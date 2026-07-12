@@ -119,7 +119,17 @@
 .uxqa-ios26-safari--collapsed .uxqa-ios26-hostname { font-size: 13px; }
 .uxqa-browser-chrome[data-appearance="ios26-safari"] { color: #fff; }
 .uxqa-browser-chrome[data-appearance="ios26-safari"] .uxqa-chrome-status { background: #000; color: #fff; }
-.uxqa-browser-chrome[data-appearance="ios26-safari"]::before { position: absolute; right: 0; bottom: 0; left: 0; height: calc(100% - var(--uxqa-content-y) - var(--uxqa-content-height)); background: #000; content: ""; transition: height 420ms cubic-bezier(.22, 1, .36, 1); }
+.uxqa-browser-chrome[data-appearance="ios26-safari"]::before {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 97px;
+  background: #000;
+  content: "";
+  transition: height 420ms cubic-bezier(.22, 1, .36, 1);
+}
+.uxqa-browser-chrome[data-appearance="ios26-safari"][data-chrome-state="collapsed"]::before { height: 57px; }
 .uxqa-legacy-safari { z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 6px 10px 5px; background: rgb(240 240 244 / 92%); box-shadow: 0 -1px 0 rgb(0 0 0 / 7%); backdrop-filter: blur(24px) saturate(1.3); transition: height 180ms cubic-bezier(.22, 1, .36, 1), background-color 180ms cubic-bezier(.22, 1, .36, 1); }
 .uxqa-legacy-safari--expanded .uxqa-address-pill { width: min(100%, 350px); flex: 0 0 34px; }
 .uxqa-mobile-actions { display: flex; width: 100%; max-width: 340px; flex: 1 1 auto; align-items: center; justify-content: space-between; box-sizing: border-box; padding: 2px 18px 5px; color: #1667d9; }

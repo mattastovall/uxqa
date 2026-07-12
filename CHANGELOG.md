@@ -4,6 +4,10 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## Unreleased
 
+## 0.1.2 - 2026-07-12
+
+- Restore Safari's opaque black background behind expanded and collapsed bottom chrome.
+
 ## 0.1.1 - 2026-07-12
 
 - Restore the full custom Safari, Chrome, desktop, and in-app browser UI as the default renderer.
