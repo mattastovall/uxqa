@@ -2,6 +2,8 @@
 
 `uxqa` is a framework-independent React component for previewing a page or React node in calibrated device and browser chrome. It ships plain CSS, keeps React external, and never changes your routes, URL, or storage.
 
+[Website and live demo](https://mattastovall.github.io/uxqa/)
+
 ## Quick starts
 
 ### Vite
