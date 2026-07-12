@@ -123,8 +123,6 @@ export function App() {
         </section>
 
         <section className="proof section">
-          <SectionHead title="Small API. Useful range." />
-          <div className="fact-row"><div><strong>06</strong><span>device profiles</span></div><div><strong>07</strong><span>browser profiles</span></div><div><strong>02</strong><span>content modes</span></div><div><strong>∞</strong><span>custom profiles</span></div></div>
           <p className="compatibility">Works with <strong>Vite</strong>, <strong>Next.js App Router</strong>, and <strong>Astro React</strong>. Supports Safari, Chrome, and compatible in-app browser profiles.</p>
         </section>
 
