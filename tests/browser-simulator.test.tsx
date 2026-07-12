@@ -1,7 +1,9 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
+import type { CSSProperties } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserSimulator, SimulatorViewport, resolveSimulatorSelection } from "../src/index.js";
+import "../src/styles.css";
 
 class ResizeObserverMock {
   static instances: ResizeObserverMock[] = [];
@@ -136,6 +138,29 @@ describe("BrowserSimulator", () => {
     const { container } = render(<SimulatorViewport content={<main>Standalone</main>} profile={profile} />);
     expect(container.querySelector(".uxqa-viewport")).toHaveClass("uxqa-viewport");
     expect(container.querySelector(".uxqa-screen")).toBeInTheDocument();
+  });
+
+  it("inherits consumer CSS custom properties from the BrowserSimulator root", () => {
+    const style: CSSProperties & Readonly<{ "--uxqa-canvas-background": string; "--uxqa-min-height": string }> = {
+      "--uxqa-canvas-background": "rgb(1, 2, 3)",
+      "--uxqa-min-height": "321px",
+    };
+    const { container } = render(<BrowserSimulator src="/" style={style} />);
+    const simulator = container.querySelector(".uxqa-simulator");
+    expect(simulator).not.toBeNull();
+    if (!simulator) return;
+    expect(getComputedStyle(simulator).getPropertyValue("--uxqa-canvas-background")).toBe("rgb(1, 2, 3)");
+    expect(getComputedStyle(simulator).getPropertyValue("--uxqa-min-height")).toBe("321px");
+  });
+
+  it("uses iPhone SE Safari offsets without an unsupported home indicator", () => {
+    const { container, rerender } = render(<BrowserSimulator src="/" controls={false} defaultSelection={{ deviceId: "iphone-se", browserId: "safari", chrome: "auto" }} />);
+    expect(container.querySelector(".uxqa-ios26-safari")).toHaveClass("uxqa-ios26-safari--home-button");
+    expect(container.querySelector(".uxqa-home-indicator")).not.toBeInTheDocument();
+
+    rerender(<BrowserSimulator key="legacy" src="/" controls={false} defaultSelection={{ deviceId: "iphone-se", browserId: "safari-old", chrome: "auto" }} />);
+    expect(container.querySelector(".uxqa-legacy-safari")).toBeInTheDocument();
+    expect(container.querySelector(".uxqa-home-indicator")).not.toBeInTheDocument();
   });
 
   it("attaches same-origin scrolling after load and tolerates cross-origin access", () => {

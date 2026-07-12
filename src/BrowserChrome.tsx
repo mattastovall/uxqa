@@ -31,11 +31,12 @@ function HomeIndicator() { return <span className="uxqa-home-indicator" />; }
 function WindowControls() { return <span className="uxqa-window-controls"><span /><span /><span /></span>; }
 
 function Ios26({ profile, chromeState, hostname }: BrowserChromeProps) {
-  return <><StatusBar profile={profile} /><div className={`uxqa-ios26-safari${chromeState === "collapsed" ? " uxqa-ios26-safari--collapsed" : ""}`}><span className="uxqa-ios26-side"><Icon kind="back" /></span><span className="uxqa-ios26-address"><span className="uxqa-hostname">{hostname}</span></span><span className="uxqa-ios26-side"><Icon kind="more" /></span></div>{profile.device.id === "iphone-16" ? <HomeIndicator /> : null}</>;
+  const homeButtonClass = profile.device.id === "iphone-se" ? " uxqa-ios26-safari--home-button" : "";
+  return <><StatusBar profile={profile} /><div className={`uxqa-ios26-safari${homeButtonClass}${chromeState === "collapsed" ? " uxqa-ios26-safari--collapsed" : ""}`}><span className="uxqa-ios26-side"><Icon kind="back" /></span><span className="uxqa-ios26-address"><span className="uxqa-hostname">{hostname}</span></span><span className="uxqa-ios26-side"><Icon kind="more" /></span></div>{profile.device.id === "iphone-16" ? <HomeIndicator /> : null}</>;
 }
 
 function LegacySafari({ profile, chromeState, hostname }: BrowserChromeProps) {
-  return <><StatusBar profile={profile} /><div className={`uxqa-bottom-chrome uxqa-legacy-safari uxqa-legacy-safari--${chromeState}`}>{chromeState === "expanded" ? <><Address hostname={hostname} /><span className="uxqa-mobile-actions"><span className="uxqa-glyph"><Icon kind="back" /></span><span className="uxqa-glyph"><Icon kind="share" /></span><span className="uxqa-glyph"><Icon kind="tabs" /></span></span></> : <span className="uxqa-collapsed-domain">{hostname}</span>}<HomeIndicator /></div></>;
+  return <><StatusBar profile={profile} /><div className={`uxqa-bottom-chrome uxqa-legacy-safari uxqa-legacy-safari--${chromeState}`}>{chromeState === "expanded" ? <><Address hostname={hostname} /><span className="uxqa-mobile-actions"><span className="uxqa-glyph"><Icon kind="back" /></span><span className="uxqa-glyph"><Icon kind="share" /></span><span className="uxqa-glyph"><Icon kind="tabs" /></span></span></> : <span className="uxqa-collapsed-domain">{hostname}</span>}{profile.device.id === "iphone-16" ? <HomeIndicator /> : null}</div></>;
 }
 
 function Android({ profile, chromeState, hostname }: BrowserChromeProps) {
