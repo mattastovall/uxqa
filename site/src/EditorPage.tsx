@@ -2,7 +2,7 @@ import editorCardSelected from "./assets/editor-card-selected.png";
 
 const EDITOR_REPOSITORY = "https://github.com/mattastovall/uxqa-editor";
 const EDITOR_DEMO_URL =
-  (import.meta.env.VITE_UXQA_EDITOR_DEMO_URL as string | undefined) ?? "https://mattastovall.github.io/uxqa-editor/demo/";
+  (import.meta.env.VITE_UXQA_EDITOR_DEMO_URL as string | undefined) ?? "https://mattastovall.github.io/uxqa-editor/";
 const X_PROFILE = "https://x.com/MattAStovall";
 
 const shell =
