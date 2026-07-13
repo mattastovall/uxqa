@@ -31,6 +31,67 @@ const steps = [
   },
 ] as const;
 
+const installationSteps = [
+  {
+    number: "01",
+    title: "Install the package",
+    file: "Terminal",
+    code: "npm install --save-dev uxqa-editor",
+  },
+  {
+    number: "02",
+    title: "Include usage context in 'AGENTS.md'",
+    file: "AGENTS.md",
+    code: `<!-- uxqa-editor:start -->
+## uxqa-editor
+
+- This project uses \`uxqa-editor\` for development-only visual editing.
+- Preserve \`data-oid\` attributes. Run \`npx uxqa-editor ids fix\` after adding or copying JSX.
+- Treat copied editor deltas as source-editing requests. Make the smallest relevant source change and verify it in the running app.
+<!-- uxqa-editor:end -->`,
+  },
+  {
+    number: "03",
+    title: "Add the project config",
+    file: "visdom.config.json",
+    code: `{
+  "version": 1,
+  "framework": "next",
+  "persistOids": true,
+  "shortcut": "Ctrl+Shift+D",
+  "coordinatorPort": 43110,
+  "agent": { "provider": "codex" }
+}`,
+  },
+  {
+    number: "04",
+    title: "Mount the development component",
+    file: "app/layout.tsx",
+    code: `import { VisdomDevtools } from "uxqa-editor/next";
+
+<body>
+  {children}
+  <VisdomDevtools />
+</body>`,
+  },
+  {
+    number: "05",
+    title: "Wrap the Next.js dev command",
+    file: "package.json",
+    code: `"scripts": {
+  "dev": "uxqa-editor dev -- npm run dev:app",
+  "dev:app": "next dev"
+}`,
+  },
+  {
+    number: "06",
+    title: "Instrument and run",
+    file: "Terminal",
+    code: `npx uxqa-editor ids fix
+npm run dev`,
+  },
+] as const;
+
 export function EditorPage() {
   return (
     <>
@@ -141,21 +202,37 @@ export function EditorPage() {
           </div>
         </section>
 
-        <section className={`${shell} grid gap-[clamp(42px,8vw,120px)] border-t border-line py-[clamp(78px,10vw,140px)] lg:grid-cols-[1fr_1fr]`} id="install">
+        <section className={`${shell} border-t border-line py-[clamp(78px,10vw,140px)]`} id="install">
           <div>
             <h2 className="m-0 max-w-[10ch] text-[clamp(2.8rem,5.2vw,5.8rem)] font-medium leading-[0.94] tracking-[-0.065em] text-balance">
               Add it to development.
             </h2>
             <p className="mt-7 mb-0 max-w-[560px] text-muted">
-              The editor runs beside your Next.js app. It does not replace the dev server, write source during preview, commit, or push.
+              Install the package, make each project change explicitly, then run the editor beside your Next.js app. There is no separate init command.
             </p>
           </div>
-          <div className="self-center border border-line bg-panel">
-            <div className="border-b border-line px-5 py-3 font-mono text-xs tracking-[0.08em] text-faint uppercase">Quick start</div>
-            <pre className="m-0 overflow-x-auto p-6 font-mono text-sm leading-7 text-ink max-sm:p-4 max-sm:text-xs"><code>{`npx uxqa-editor init\nnpm run dev`}</code></pre>
+          <div className="mt-[clamp(44px,6vw,76px)] border border-line bg-panel">
+            <div className="flex items-center justify-between border-b border-line px-5 py-3 font-mono text-xs tracking-[0.08em] text-faint uppercase">
+              <span>Installation</span>
+              <span>{installationSteps.length} steps</span>
+            </div>
+            <ol className="m-0 list-none p-0">
+              {installationSteps.map((step) => (
+                <li className="grid border-b border-line last:border-b-0 lg:grid-cols-[minmax(250px,.72fr)_minmax(0,1.28fr)]" key={step.number}>
+                  <div className="border-b border-line px-5 py-5 lg:border-r lg:border-b-0">
+                    <span className="font-mono text-xs text-faint">{step.number}</span>
+                    <h3 className="mt-5 mb-0 text-[clamp(1.15rem,1.8vw,1.55rem)] font-medium tracking-[-0.035em]">{step.title}</h3>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="border-b border-line px-5 py-2.5 font-mono text-[0.68rem] tracking-[0.06em] text-faint uppercase">{step.file}</div>
+                    <pre className="m-0 overflow-x-auto p-5 font-mono text-[0.78rem] leading-6 text-ink max-sm:p-4 max-sm:text-[0.7rem]"><code className="whitespace-pre-wrap break-words">{step.code}</code></pre>
+                  </div>
+                </li>
+              ))}
+            </ol>
             <a
               className="flex min-h-12 items-center justify-between border-t border-line px-5 font-mono text-xs tracking-[0.06em] text-muted no-underline uppercase hover:text-white"
-              href={`${EDITOR_REPOSITORY}#quick-start`}
+              href={`${EDITOR_REPOSITORY}#install`}
             >
               Read the setup guide <span aria-hidden="true">↗</span>
             </a>
