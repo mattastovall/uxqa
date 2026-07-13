@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from "react";
 import { BrowserSimulator } from "uxqa";
+import "uxqa/styles.css";
 
 const REPOSITORY = "https://github.com/mattastovall/uxqa";
 
@@ -290,9 +291,10 @@ export function App() {
         </a>
         <nav className="flex gap-8 max-sm:gap-5 max-[380px]:gap-3.5" aria-label="Main navigation">
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#start">Get started</a>
+          <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="./uxqa-editor/">Editor</a>
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#faq">FAQ</a>
         </nav>
-        <a className="justify-self-end font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white" href={REPOSITORY}>
+        <a className="justify-self-end font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:hidden" href={REPOSITORY}>
           GitHub <span aria-hidden="true">↗</span>
         </a>
       </header>
