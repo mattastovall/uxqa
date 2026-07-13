@@ -193,3 +193,12 @@ export function getContentRect({ profile, chromeState }: Readonly<{ profile: Res
     default: { const exhaustive: never = profile.browser.chrome; return exhaustive; }
   }
 }
+
+export function getLayoutViewportHeight(profile: ResolvedSimulatorProfile): number {
+  if (profile.selection.chrome === "off") return profile.device.screen.height;
+  switch (profile.browser.chrome.kind) {
+    case "fixed": return profile.browser.chrome.content.height;
+    case "scroll-linked": return Math.max(profile.browser.chrome.expanded.height, profile.browser.chrome.collapsed.height);
+    default: { const exhaustive: never = profile.browser.chrome; return exhaustive; }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "uxqa",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Calibrated device and browser simulation for React applications.",
   "license": "MIT",
   "repository": {

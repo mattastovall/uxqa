@@ -108,6 +108,31 @@ describe("BrowserSimulator", () => {
     expect(container.querySelector(".uxqa-android-toolbar")).not.toBeInTheDocument();
   });
 
+  it("keeps the iframe layout viewport stable while Safari chrome changes the visible clip", () => {
+    const { container } = render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "iphone-16", browserId: "safari", chrome: "auto" }} />);
+    const frame = screen.getByTitle("Website preview") as HTMLIFrameElement;
+    const content = container.querySelector(".uxqa-content");
+    let scrollY = 0;
+    let scrollHandler: (() => void) | undefined;
+    const target = {
+      get scrollY() { return scrollY; },
+      document: { documentElement: { scrollHeight: 2000, clientHeight: 741 } },
+      addEventListener: vi.fn((_name: string, handler: () => void) => { scrollHandler = handler; }),
+      removeEventListener: vi.fn(),
+    };
+    Object.defineProperty(frame, "contentWindow", { configurable: true, value: target });
+
+    fireEvent.load(frame);
+    expect(frame).toHaveStyle({ height: "741px" });
+    expect(content).toHaveStyle({ height: "696px" });
+
+    scrollY = 60;
+    act(() => scrollHandler?.());
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-chrome-state", "collapsed");
+    expect(frame).toHaveStyle({ height: "741px" });
+    expect(content).toHaveStyle({ height: "741px" });
+  });
+
   it("reports invalid controlled selections", () => {
     const onError = vi.fn();
     render(<BrowserSimulator src="/" selection={{ deviceId: "missing", browserId: "missing", chrome: "auto" }} onSelectionChange={vi.fn()} onError={onError} />);

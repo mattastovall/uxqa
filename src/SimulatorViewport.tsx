@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type IframeHTMLAttribu
 import { BrowserChrome } from "./BrowserChrome.js";
 import { SafariGlassFilter, useSafariGlass } from "./SafariGlass.js";
 import { calculateScale } from "./scale.js";
-import { getContentRect, type ChromeState, type ResolvedSimulatorProfile } from "./profiles.js";
+import { getContentRect, getLayoutViewportHeight, type ChromeState, type ResolvedSimulatorProfile } from "./profiles.js";
 import { createScrollTelemetry, reduceChromeScroll, type ChromeScrollTracker } from "./scroll.js";
 import { handleViewportWheel } from "./viewportInteraction.js";
 
@@ -134,6 +134,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
   }, []);
 
   const rect = getContentRect({ profile, chromeState });
+  const iframeLayoutHeight = getLayoutViewportHeight(profile);
   const safariGlass = useSafariGlass({
     screenRef,
     contentRef,
@@ -158,7 +159,7 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
         {safariGlass ? <SafariGlassFilter frame={safariGlass} /> : null}
         <BrowserChrome profile={profile} chromeState={chromeState} hostname={addressFor(props.src, hostname)} />
         <div ref={contentRef} className="uxqa-content" style={contentStyle}>
-          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => {
+          {"src" in props && props.src !== undefined ? <iframe ref={frameRef} {...props.iframeProps} className="uxqa-frame" style={{ height: iframeLayoutHeight }} src={props.src} title={props.title ?? "Website preview"} onLoad={(event) => {
             setStatus("loaded");
             try {
               void event.currentTarget.contentWindow?.document.documentElement;

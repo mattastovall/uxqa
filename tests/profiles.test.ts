@@ -4,6 +4,7 @@ import {
   BUILT_IN_DEVICES,
   DEFAULT_SELECTION,
   getContentRect,
+  getLayoutViewportHeight,
   resolveSimulatorSelection,
   validateProfiles,
 } from "../src/profiles.js";
@@ -125,5 +126,8 @@ describe("simulator profiles", () => {
     expect(getContentRect({ profile: linked, chromeState: "expanded" })).toEqual({ x: 0, y: 80, width: 412, height: 811 });
     expect(getContentRect({ profile: linked, chromeState: "collapsed" })).toEqual({ x: 0, y: 24, width: 412, height: 867 });
     expect(getContentRect({ profile: { ...linked, selection: { ...linked.selection, chrome: "off" } }, chromeState: "expanded" })).toEqual({ x: 0, y: 0, width: 412, height: 915 });
+    expect(getLayoutViewportHeight(fixed)).toBe(930);
+    expect(getLayoutViewportHeight(linked)).toBe(867);
+    expect(getLayoutViewportHeight({ ...linked, selection: { ...linked.selection, chrome: "off" } })).toBe(915);
   });
 });
