@@ -7,6 +7,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ## 0.1.2 - 2026-07-12
 
 - Restore Safari's opaque black background behind expanded and collapsed bottom chrome.
+- Calibrate Safari's usable viewport so fixed and full-height content stays above expanded browser chrome.
 
 ## 0.1.1 - 2026-07-12
 

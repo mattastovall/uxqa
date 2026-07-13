@@ -34,13 +34,13 @@ describe("simulator profiles", () => {
 
   it("preserves the explicit calibrated geometry for every built-in pair", () => {
     expect(BUILT_IN_BROWSERS.map(({ id, chrome }) => ({ id, chrome }))).toEqual([
-      { id: "iphone-16/safari", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 59, width: 393, height: 741 }, collapsed: { x: 0, y: 59, width: 393, height: 741 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 420 } },
+      { id: "iphone-16/safari", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 59, width: 393, height: 696 }, collapsed: { x: 0, y: 59, width: 393, height: 741 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 420 } },
       { id: "iphone-16/safari-old", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 59, width: 393, height: 690 }, collapsed: { x: 0, y: 59, width: 393, height: 759 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 180 } },
       { id: "iphone-16/instagram", chrome: { kind: "fixed", content: { x: 0, y: 109, width: 393, height: 709 } } },
       { id: "iphone-16/tiktok", chrome: { kind: "fixed", content: { x: 0, y: 107, width: 393, height: 711 } } },
       { id: "iphone-16/facebook", chrome: { kind: "fixed", content: { x: 0, y: 111, width: 393, height: 707 } } },
       { id: "iphone-16/linkedin", chrome: { kind: "fixed", content: { x: 0, y: 107, width: 393, height: 711 } } },
-      { id: "iphone-se/safari", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 20, width: 375, height: 597 }, collapsed: { x: 0, y: 20, width: 375, height: 597 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 420 } },
+      { id: "iphone-se/safari", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 20, width: 375, height: 585 }, collapsed: { x: 0, y: 20, width: 375, height: 597 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 420 } },
       { id: "iphone-se/safari-old", chrome: { kind: "scroll-linked", expanded: { x: 0, y: 20, width: 375, height: 563 }, collapsed: { x: 0, y: 20, width: 375, height: 603 }, collapseThresholdPx: 48, expandThresholdPx: 24, transitionMs: 180 } },
       { id: "iphone-se/instagram", chrome: { kind: "fixed", content: { x: 0, y: 68, width: 375, height: 599 } } },
       { id: "iphone-se/tiktok", chrome: { kind: "fixed", content: { x: 0, y: 66, width: 375, height: 601 } } },
