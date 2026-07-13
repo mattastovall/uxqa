@@ -2,7 +2,7 @@ import editorCardSelected from "./assets/editor-card-selected.png";
 
 const EDITOR_REPOSITORY = "https://github.com/mattastovall/uxqa-editor";
 const EDITOR_DEMO_URL =
-  (import.meta.env.VITE_UXQA_EDITOR_DEMO_URL as string | undefined) ?? "http://127.0.0.1:3210/";
+  (import.meta.env.VITE_UXQA_EDITOR_DEMO_URL as string | undefined) ?? "https://mattastovall.github.io/uxqa-editor/demo/";
 const X_PROFILE = "https://x.com/MattAStovall";
 
 const shell =
@@ -113,7 +113,7 @@ export function EditorPage() {
               Adjust layout without leaving the browser.
             </h2>
             <p className="mt-7 mb-0 max-w-[620px] text-[clamp(1rem,1.3vw,1.18rem)] text-muted">
-              Try the live uxqa-editor fixture below. Press Ctrl+Shift+D, select an element, and preview spacing in authored units before any source file changes.
+              Try the public editor demo below. Press Ctrl+Shift+D, select an element, and preview spacing in authored units on its fixed fixture.
             </p>
           </div>
           <div className="overflow-hidden border border-line bg-panel" aria-label="Interactive uxqa-editor demo">
