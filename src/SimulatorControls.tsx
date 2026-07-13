@@ -17,15 +17,37 @@ export function SimulatorControls({ selection, devices, browsers, onSelectionCha
 
   return (
     <div className="uxqa-controls">
-      {showDevice ? <label className="uxqa-control">Device<select value={selection.deviceId} onChange={(event) => {
-        const device = devices.find((candidate) => candidate.id === event.currentTarget.value);
-        if (!device) return;
-        const nextBrowser = browsers.find((candidate) => candidate.deviceId === device.id && candidate.browserId === device.defaultBrowserId)
-          ?? browsers.find((candidate) => candidate.deviceId === device.id);
-        if (nextBrowser) onSelectionChange({ ...selection, deviceId: device.id, browserId: nextBrowser.browserId });
-      }}>{devices.map((device) => <option key={device.id} value={device.id}>{device.label}</option>)}</select></label> : null}
-      {showBrowser ? <label className="uxqa-control">Browser<select value={selection.browserId} onChange={(event) => onSelectionChange({ ...selection, browserId: event.currentTarget.value })}>{compatible.map((browser) => <option key={browser.id} value={browser.browserId}>{browser.label}</option>)}</select></label> : null}
-      {showChrome ? <label className="uxqa-control uxqa-control--checkbox"><input type="checkbox" checked={selection.chrome !== "off"} onChange={(event) => onSelectionChange({ ...selection, chrome: event.currentTarget.checked ? "auto" : "off" })} />Browser chrome</label> : null}
+      {showDevice ? (
+        <label className="uxqa-control">
+          <span className="uxqa-control-label">Device</span>
+          <select
+            value={selection.deviceId}
+            onChange={(event) => {
+              const device = devices.find((candidate) => candidate.id === event.currentTarget.value);
+              if (!device) return;
+              const nextBrowser = browsers.find((candidate) => candidate.deviceId === device.id && candidate.browserId === device.defaultBrowserId)
+                ?? browsers.find((candidate) => candidate.deviceId === device.id);
+              if (nextBrowser) onSelectionChange({ ...selection, deviceId: device.id, browserId: nextBrowser.browserId });
+            }}
+          >
+            {devices.map((device) => <option key={device.id} value={device.id}>{device.label}</option>)}
+          </select>
+        </label>
+      ) : null}
+      {showBrowser ? (
+        <label className="uxqa-control">
+          <span className="uxqa-control-label">Browser</span>
+          <select value={selection.browserId} onChange={(event) => onSelectionChange({ ...selection, browserId: event.currentTarget.value })}>
+            {compatible.map((browser) => <option key={browser.id} value={browser.browserId}>{browser.label}</option>)}
+          </select>
+        </label>
+      ) : null}
+      {showChrome ? (
+        <label className="uxqa-control uxqa-control--switch">
+          <span className="uxqa-control-label">Browser chrome</span>
+          <input type="checkbox" role="switch" checked={selection.chrome !== "off"} onChange={(event) => onSelectionChange({ ...selection, chrome: event.currentTarget.checked ? "auto" : "off" })} />
+        </label>
+      ) : null}
     </div>
   );
 }

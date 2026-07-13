@@ -127,8 +127,11 @@ Supported CSS custom properties are:
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `--uxqa-canvas-background` | `#eef1f5` | Viewport canvas |
-| `--uxqa-control-background` | `#ffffff` | Select background |
+| `--uxqa-control-background` | `#ffffff` | Select / switch track background |
+| `--uxqa-control-border` | `#c5ccd6` | Control borders |
 | `--uxqa-control-color` | `#17202a` | Controls and labels |
+| `--uxqa-control-accent` | `#2458d3` | Focus ring and switch on-state |
+| `--uxqa-control-radius` | `8px` | Select corner radius |
 | `--uxqa-radius` | `16px` | Canvas and error radius |
 | `--uxqa-shadow` | device shadow | Simulated screen shadow |
 | `--uxqa-min-height` | `480px` | Minimum viewport height |
