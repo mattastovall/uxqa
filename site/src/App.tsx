@@ -3,6 +3,7 @@ import { BrowserSimulator } from "uxqa";
 import "uxqa/styles.css";
 
 const REPOSITORY = "https://github.com/mattastovall/uxqa";
+const X_PROFILE = "https://x.com/MattAStovall";
 
 type CopyState = { kind: "idle" } | { kind: "copied" } | { kind: "failed" };
 
@@ -227,7 +228,7 @@ const startSteps = [
   { label: "Install", code: "npm install uxqa" },
   { label: "Import", code: 'import { BrowserSimulator } from "uxqa";\nimport "uxqa/styles.css";' },
   { label: "Render", code: '<BrowserSimulator\n  className="preview"\n  content={<YourPage />}\n  hostname="your-app.dev"\n/>' },
-  { label: "Size", code: '.preview {\n  height: min(760px, 80vh);\n}\n\n.preview .uxqa-viewport {\n  height: 100%;\n}' },
+  { label: "Size", code: '.preview {\n  height: min(760px, 80vh);\n}\n\n.preview .uxqa-viewport {\n  min-height: 0;\n}' },
 ] as const;
 
 function GettingStartedCarousel() {
@@ -290,7 +291,7 @@ export function App() {
           <span>ux</span>qa<span className="text-white">.</span>
         </a>
         <nav className="flex gap-8 max-sm:gap-5 max-[380px]:gap-3.5" aria-label="Main navigation">
-          <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#start">Get started</a>
+          <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#start">What</a>
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="./uxqa-editor/">Editor</a>
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#faq">FAQ</a>
         </nav>
@@ -367,7 +368,14 @@ export function App() {
           <span>ux</span>qa<span className="text-white">.</span>
         </a>
         <p className="m-0 max-sm:hidden">React device and browser previews. MIT licensed.</p>
-        <a className="justify-self-end" href={REPOSITORY}>GitHub ↗</a>
+        <div className="flex items-center gap-3 justify-self-end">
+          <a href={REPOSITORY}>GitHub ↗</a>
+          <a href={X_PROFILE} aria-label="X" className="inline-flex text-faint hover:text-white">
+            <svg aria-hidden="true" className="size-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+        </div>
       </footer>
     </>
   );

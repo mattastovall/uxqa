@@ -69,9 +69,12 @@
 }
 
 /* Child selectors for the uxqa package — cannot be expressed as element utilities */
-.simulator-shell .uxqa-simulator,
-.simulator-shell .uxqa-viewport {
+.simulator-shell .uxqa-simulator {
   height: 100%;
+}
+
+.simulator-shell .uxqa-viewport {
+  min-height: 0;
 }
 
 .hero-demo .uxqa-simulator {

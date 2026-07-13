@@ -25,7 +25,7 @@ Give the component a bounded container so scale-to-fit has useful dimensions:
 
 ```css
 .preview { height: min(800px, 80vh); }
-.preview .uxqa-viewport { height: 100%; }
+.preview .uxqa-viewport { min-height: 0; }
 ```
 
 ### Next.js App Router

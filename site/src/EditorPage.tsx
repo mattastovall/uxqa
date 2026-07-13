@@ -2,6 +2,7 @@ import editorCardSelected from "./assets/editor-card-selected.png";
 import editorSpacingControl from "./assets/editor-spacing-control.png";
 
 const EDITOR_REPOSITORY = "https://github.com/mattastovall/uxqa-editor";
+const X_PROFILE = "https://x.com/MattAStovall";
 
 const shell =
   "mx-auto w-[min(1280px,calc(100%-48px))] px-[env(safe-area-inset-left)_env(safe-area-inset-right)] max-sm:w-[min(100%-28px,1280px)]";
@@ -44,7 +45,7 @@ export function EditorPage() {
           <span>ux</span>qa<span className="text-white">.</span>
         </a>
         <nav className="flex gap-8 max-sm:gap-5 max-[380px]:gap-3.5" aria-label="Main navigation">
-          <a className={navClass} href="../#start">Get started</a>
+          <a className={navClass} href="../#start">What</a>
           <a className={`${navClass} text-white`} href="./" aria-current="page">Editor</a>
           <a className={navClass} href="../#faq">FAQ</a>
         </nav>
@@ -153,7 +154,14 @@ export function EditorPage() {
           <span>ux</span>qa<span className="text-white">.</span>
         </a>
         <p className="m-0 max-sm:hidden">Development-only visual editing for Next.js.</p>
-        <a className="justify-self-end" href={EDITOR_REPOSITORY}>GitHub ↗</a>
+        <div className="flex items-center gap-3 justify-self-end">
+          <a href={EDITOR_REPOSITORY}>GitHub ↗</a>
+          <a href={X_PROFILE} aria-label="X" className="inline-flex text-faint hover:text-white">
+            <svg aria-hidden="true" className="size-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+        </div>
       </footer>
     </>
   );
