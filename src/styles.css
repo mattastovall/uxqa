@@ -106,7 +106,7 @@
   background: #fff;
   box-shadow: var(--uxqa-shadow, 0 20px 60px rgb(18 28 45 / 18%));
 }
-.uxqa-content { position: absolute; overflow: hidden; transition-property: top, height; transition-timing-function: ease; }
+.uxqa-content { position: absolute; z-index: 1; overflow: hidden; transition-property: top, height; transition-timing-function: ease; }
 .uxqa-frame, .uxqa-react-content { width: 100%; height: 100%; border: 0; background: #fff; overscroll-behavior: contain; }
 .uxqa-react-content { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .uxqa-browser-chrome { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; user-select: none; color: #121317; font: 600 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -187,8 +187,9 @@
 .uxqa-ios26-safari--collapsed .uxqa-ios26-hostname { font-size: 13px; }
 .uxqa-browser-chrome[data-appearance="ios26-safari"] { color: #fff; }
 .uxqa-browser-chrome[data-appearance="ios26-safari"] .uxqa-chrome-status { background: #000; color: #fff; }
-.uxqa-browser-chrome[data-appearance="ios26-safari"]::before {
+.uxqa-screen[data-browser-appearance="ios26-safari"]::before {
   position: absolute;
+  z-index: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -241,7 +242,7 @@
 .uxqa-status--error { color: #9f1c1c; }
 @media (prefers-reduced-motion: reduce) {
   .uxqa-content,
-  .uxqa-browser-chrome[data-appearance="ios26-safari"]::before,
+  .uxqa-screen[data-browser-appearance="ios26-safari"]::before,
   .uxqa-ios26-safari,
   .uxqa-ios26-side,
   .uxqa-ios26-address,
