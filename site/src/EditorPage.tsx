@@ -1,7 +1,8 @@
 import editorCardSelected from "./assets/editor-card-selected.png";
-import editorSpacingControl from "./assets/editor-spacing-control.png";
 
 const EDITOR_REPOSITORY = "https://github.com/mattastovall/uxqa-editor";
+const EDITOR_DEMO_URL =
+  (import.meta.env.VITE_UXQA_EDITOR_DEMO_URL as string | undefined) ?? "http://127.0.0.1:3210/";
 const X_PROFILE = "https://x.com/MattAStovall";
 
 const shell =
@@ -106,25 +107,38 @@ export function EditorPage() {
           </ol>
         </section>
 
-        <section className={`${shell} border-t border-line py-[clamp(78px,10vw,140px)]`}>
+        <section className={`${shell} border-t border-line py-[clamp(78px,10vw,140px)]`} id="demo">
           <div className="mb-12 max-w-[740px]">
             <h2 className="m-0 text-[clamp(2.8rem,5.6vw,6rem)] font-medium leading-[0.94] tracking-[-0.065em] text-balance">
               Adjust layout without leaving the browser.
             </h2>
             <p className="mt-7 mb-0 max-w-[620px] text-[clamp(1rem,1.3vw,1.18rem)] text-muted">
-              Authored units stay intact. Preview px, rem, percent, viewport units, variables, and calc expressions before any source file changes.
+              Try the live uxqa-editor fixture below. Press Ctrl+Shift+D, select an element, and preview spacing in authored units before any source file changes.
             </p>
           </div>
-          <figure className="m-0 border border-line bg-panel p-2.5 max-sm:p-1.5">
-            <img
-              className="block h-auto w-full"
-              src={editorSpacingControl}
-              width="1645"
-              height="1322"
+          <div className="overflow-hidden border border-line bg-panel" aria-label="Interactive uxqa-editor demo">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
+              <p className="m-0 font-mono text-xs tracking-[0.08em] text-faint uppercase">
+                Live demo · uxqa-editor
+              </p>
+              <a
+                className="font-mono text-xs tracking-[0.06em] text-muted no-underline uppercase hover:text-white"
+                href={EDITOR_DEMO_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open fullscreen <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <iframe
+              className="block h-[min(820px,78vh)] w-full border-0 bg-[#111] max-sm:h-[min(640px,70vh)]"
+              src={EDITOR_DEMO_URL}
+              title="uxqa-editor interactive demo"
               loading="lazy"
-              alt="uxqa-editor showing a live 48 pixel padding adjustment on the selected app container"
+              allow="clipboard-write"
+              referrerPolicy="no-referrer-when-downgrade"
             />
-          </figure>
+          </div>
         </section>
 
         <section className={`${shell} grid gap-[clamp(42px,8vw,120px)] border-t border-line py-[clamp(78px,10vw,140px)] lg:grid-cols-[1fr_1fr]`} id="install">
