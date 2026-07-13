@@ -33,7 +33,7 @@ test("iframe content stays interactive and same-origin scrolling collapses chrom
 
 test("keyboard focus reaches every default control", async ({ page }) => {
   const example = page.locator("section").first();
-  const controls = [example.getByRole("combobox").nth(0), example.getByRole("combobox").nth(1), example.getByRole("checkbox")];
+  const controls = [example.getByRole("combobox").nth(0), example.getByRole("combobox").nth(1), example.getByRole("switch")];
   await controls[0].focus();
   for (const control of controls) {
     await expect(control).toBeFocused();
