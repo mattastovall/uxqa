@@ -70,8 +70,8 @@
 .uxqa-compact-trigger { max-width: 150px; padding: 0 10px 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .uxqa-compact-trigger:hover, .uxqa-compact-chrome:hover { background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 8%, transparent); }
 .uxqa-compact-chrome { padding: 0 12px; }
-.uxqa-compact-chrome > span { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 28%, transparent); }
-.uxqa-compact-chrome[aria-pressed="true"] > span { background: var(--uxqa-control-accent, #2458d3); box-shadow: 0 0 0 3px color-mix(in srgb, var(--uxqa-control-accent, #2458d3) 20%, transparent); }
+.uxqa-compact-chrome > span { width: 9px; height: 9px; border-radius: 2px; background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 28%, transparent); }
+.uxqa-compact-chrome[aria-pressed="true"] > span { background: var(--uxqa-control-accent, #2458d3); box-shadow: 0 0 0 2px color-mix(in srgb, var(--uxqa-control-accent, #2458d3) 20%, transparent); }
 .uxqa-compact-menu {
   position: absolute;
   bottom: calc(100% + 8px);
