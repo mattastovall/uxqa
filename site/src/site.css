@@ -78,15 +78,10 @@
 }
 
 .hero-demo .uxqa-simulator {
-  padding: 24px;
   --uxqa-control-color: #f3f3ef;
   --uxqa-control-background: #171719;
   --uxqa-control-accent: #e8e8e4;
-  --uxqa-canvas-background: #050505;
   --uxqa-radius: 0;
   --uxqa-shadow: 0 20px 70px rgb(0 0 0 / 62%);
 }
 
-.hero-demo .uxqa-viewport {
-  background: #050505;
-}

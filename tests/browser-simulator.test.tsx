@@ -224,12 +224,12 @@ describe("BrowserSimulator", () => {
     expect(onWheel).not.toHaveBeenCalled();
   });
 
-  it("focuses the viewport when pointer down occurs inside it", () => {
+  it("does not focus the viewport when pointer down occurs inside it", () => {
     const { container } = render(<BrowserSimulator content={<button type="button">Inside preview</button>} controls={false} />);
     const viewport = container.querySelector(".uxqa-viewport") as HTMLDivElement;
     const focus = vi.spyOn(viewport, "focus");
     fireEvent.pointerDown(viewport);
-    expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(focus).not.toHaveBeenCalled();
   });
 
   it("gives standalone SimulatorViewport the default styling root", () => {

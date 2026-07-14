@@ -325,7 +325,7 @@ export function App() {
             </div>
           </div>
           <div
-            className="hero-demo min-w-0 self-start bg-[#050505] max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
+            className="hero-demo min-w-0 self-start max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
             aria-label="Interactive uxqa demo"
           >
             <div className="simulator-shell h-[min(680px,72vh)] min-h-[520px] max-sm:h-[min(560px,62vh)] max-sm:min-h-0 max-[380px]:h-[min(500px,58vh)]">

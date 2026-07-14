@@ -153,7 +153,6 @@ export function SimulatorViewport(props: SimulatorViewportProps) {
       style={style}
       tabIndex={-1}
       aria-label="Device preview"
-      onPointerDown={() => viewportRef.current?.focus({ preventScroll: true })}
     >
       <div ref={screenRef} className="uxqa-screen" style={screenStyle} data-device={profile.device.id} data-browser-appearance={profile.browser.appearance} data-glass-refraction={safariGlass ? "active" : "fallback"}>
         {safariGlass ? <SafariGlassFilter frame={safariGlass} /> : null}
