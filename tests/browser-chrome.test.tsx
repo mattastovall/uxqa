@@ -141,6 +141,8 @@ describe("BrowserChrome", () => {
     expect(css).toContain(".uxqa-compact-launcher");
     expect(css).toContain(".uxqa-compact-menu");
     expect(css).toContain(".uxqa-compact-option[aria-selected=\"true\"]");
+    expect(css).toContain(".uxqa-simulator:has(.uxqa-compact-controls) { grid-template-rows: minmax(0, 1fr) auto;");
+    expect(css).toContain(".uxqa-viewport:has(+ .uxqa-compact-controls) { grid-row: 1; }");
     expect(css).toContain(".uxqa-content { position: absolute; z-index: 1;");
     expect(css).toContain('.uxqa-screen[data-browser-appearance="ios26-safari"]::before');
     expect(css).not.toContain('.uxqa-browser-chrome[data-appearance="ios26-safari"]::before');

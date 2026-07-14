@@ -48,6 +48,12 @@ export function BrowserSimulator(props: BrowserSimulatorProps) {
     ...(onLoad === undefined ? {} : { onLoad }),
     ...(onError === undefined ? {} : { onError }),
   };
+  const viewport = "src" in props && props.src !== undefined
+    ? <SimulatorViewport src={props.src} {...(props.title === undefined ? {} : { title: props.title })} {...(props.iframeProps === undefined ? {} : { iframeProps: props.iframeProps })} {...viewportShared} />
+    : <SimulatorViewport content={props.content} {...viewportShared} />;
+  const renderedControls = controls !== false
+    ? <SimulatorControls variant={controlVariant} selection={resolved.selection} devices={profiles.devices} browsers={profiles.browsers} onSelectionChange={changeSelection} {...controlProps} />
+    : null;
 
   if (!profileResult.ok) {
     return (
@@ -62,10 +68,9 @@ export function BrowserSimulator(props: BrowserSimulatorProps) {
 
   return (
     <div className={["uxqa-simulator", className].filter(Boolean).join(" ")} style={style}>
-      {controls !== false ? <SimulatorControls variant={controlVariant} selection={resolved.selection} devices={profiles.devices} browsers={profiles.browsers} onSelectionChange={changeSelection} {...controlProps} /> : null}
-      {"src" in props && props.src !== undefined
-        ? <SimulatorViewport src={props.src} {...(props.title === undefined ? {} : { title: props.title })} {...(props.iframeProps === undefined ? {} : { iframeProps: props.iframeProps })} {...viewportShared} />
-        : <SimulatorViewport content={props.content} {...viewportShared} />}
+      {controlVariant === "compact" ? null : renderedControls}
+      {viewport}
+      {controlVariant === "compact" ? renderedControls : null}
     </div>
   );
 }
