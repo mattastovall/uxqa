@@ -13,8 +13,9 @@ const invalidControlled = <BrowserSimulator src="/" selection={{ deviceId: "pixe
 
 type PublicProps = ComponentProps<typeof BrowserSimulator>;
 const publicProps: PublicProps = { src: "/", controls: { device: true, browser: false, chrome: true } };
+const compactProps: PublicProps = { src: "/", controlVariant: "compact" };
 
-void [validSource, validContent, validControlled, invalidSource, invalidControlled, publicProps];
+void [validSource, validContent, validControlled, invalidSource, invalidControlled, publicProps, compactProps];
 
 it("keeps the public prop contracts type checked", () => {
   expect(publicProps.src).toBe("/");

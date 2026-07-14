@@ -78,50 +78,14 @@
 }
 
 .hero-demo .uxqa-simulator {
-  --uxqa-control-color: #d6d6d2;
-  --uxqa-control-background: #161616;
-  --uxqa-control-border: #333;
-  --uxqa-control-radius: 2px;
+  --uxqa-control-color: #f3f3ef;
+  --uxqa-control-background: #171719;
   --uxqa-control-accent: #e8e8e4;
-  --uxqa-canvas-background: #141414;
-  --uxqa-radius: 2px;
-  --uxqa-shadow: 0 14px 50px rgb(0 0 0 / 50%);
+  --uxqa-canvas-background: #050505;
+  --uxqa-radius: 0;
+  --uxqa-shadow: 0 20px 70px rgb(0 0 0 / 62%);
 }
 
-.hero-demo .uxqa-control select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath stroke='%23888888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='m1.5 1.75 4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
-}
-
-.hero-demo .uxqa-control--switch input:checked {
-  background: #e8e8e4;
-}
-
-.hero-demo .uxqa-control--switch input:checked::after {
-  background: #111;
-}
-
-@media (max-width: 640px) {
-  .hero-demo .uxqa-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 12px;
-  }
-
-  .hero-demo .uxqa-control select {
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    font-size: 16px;
-  }
-
-  .hero-demo .uxqa-control--switch {
-    grid-column: 1 / -1;
-    min-height: auto;
-  }
-}
-
-@media (max-width: 380px) {
-  .hero-demo .uxqa-controls {
-    grid-template-columns: 1fr;
-  }
+.hero-demo .uxqa-viewport {
+  background: #050505;
 }

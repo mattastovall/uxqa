@@ -97,6 +97,16 @@ Pass `content` instead of `src` when an iframe is unnecessary:
 
 `src` and `content` are mutually exclusive.
 
+### Compact controls
+
+Keep the native controls by default, or opt into the compact floating picker used on the uxqa landing page:
+
+```tsx
+<BrowserSimulator className="preview" src="/campaign" controlVariant="compact" />
+```
+
+`controls={false}` still hides every control. A `controls` visibility object works with either variant.
+
 ### Iframe behavior and security
 
 Same-origin frames can progressively collapse and expand supported browser chrome based on scrolling. Cross-origin pages still render, but browser security prevents `uxqa` from reading their DOM or scroll position, so scroll-linked chrome stays safely expanded. Cross-origin fallback is expected behavior, not an error.
@@ -172,7 +182,7 @@ Use `validateProfiles` when loading profile data at runtime.
 
 ## Public API
 
-`BrowserSimulator` accepts exactly one of `src` or `content`; `title`; controlled `selection` and `onSelectionChange` or uncontrolled `defaultSelection`; `controls`; additive `profiles`; `className`; `style`; `hostname`; `iframeProps`; `onLoad`; and `onError`.
+`BrowserSimulator` accepts exactly one of `src` or `content`; `title`; controlled `selection` and `onSelectionChange` or uncontrolled `defaultSelection`; `controls`; `controlVariant`; additive `profiles`; `className`; `style`; `hostname`; `iframeProps`; `onLoad`; and `onError`.
 
 `SimulatorViewport` is the headless viewport for custom controls. `SimulatorControls` and `BrowserChrome` are also exported for composition.
 

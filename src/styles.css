@@ -16,6 +16,86 @@
   gap: 12px 16px;
   align-items: end;
 }
+.uxqa-simulator:has(.uxqa-compact-controls) { position: relative; }
+.uxqa-compact-controls { position: absolute; right: 14px; bottom: 14px; left: 14px; z-index: 4; display: flex; justify-content: center; pointer-events: none; }
+.uxqa-compact-launcher, .uxqa-compact-pill { pointer-events: auto; }
+.uxqa-compact-launcher {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--uxqa-control-color, #17202a) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--uxqa-control-background, #ffffff) 90%, transparent);
+  color: var(--uxqa-control-color, #17202a);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 24%);
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+.uxqa-compact-launcher > svg { width: 19px; height: 19px; transform: rotate(-8deg); }
+.uxqa-compact-launcher:hover { background: color-mix(in srgb, var(--uxqa-control-background, #ffffff) 96%, transparent); }
+.uxqa-compact-launcher:active, .uxqa-compact-trigger:active, .uxqa-compact-option:active, .uxqa-compact-chrome:active { transform: scale(.96); }
+.uxqa-compact-launcher:focus-visible, .uxqa-compact-trigger:focus-visible, .uxqa-compact-option:focus-visible, .uxqa-compact-chrome:focus-visible { outline: 2px solid var(--uxqa-control-accent, #2458d3); outline-offset: 2px; }
+.uxqa-compact-pill {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--uxqa-control-color, #17202a) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--uxqa-control-background, #ffffff) 92%, transparent);
+  box-shadow: 0 12px 34px rgb(0 0 0 / 28%);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  animation: uxqa-compact-in 140ms cubic-bezier(.22, 1, .36, 1) both;
+}
+.uxqa-compact-anchor { position: relative; min-width: 0; }
+.uxqa-compact-trigger, .uxqa-compact-chrome {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--uxqa-control-color, #17202a);
+  font: 600 12px/1.2 ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+.uxqa-compact-trigger { max-width: 150px; padding: 0 10px 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uxqa-compact-trigger:hover, .uxqa-compact-chrome:hover { background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 8%, transparent); }
+.uxqa-compact-chrome { padding: 0 12px; }
+.uxqa-compact-chrome > span { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 28%, transparent); }
+.uxqa-compact-chrome[aria-pressed="true"] > span { background: var(--uxqa-control-accent, #2458d3); box-shadow: 0 0 0 3px color-mix(in srgb, var(--uxqa-control-accent, #2458d3) 20%, transparent); }
+.uxqa-compact-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 1;
+  display: grid;
+  width: max-content;
+  min-width: 190px;
+  max-width: min(280px, calc(100vw - 28px));
+  max-height: 260px;
+  gap: 2px;
+  padding: 5px;
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--uxqa-control-color, #17202a) 16%, transparent);
+  border-radius: 12px;
+  background: var(--uxqa-control-background, #ffffff);
+  box-shadow: 0 14px 36px rgb(0 0 0 / 28%);
+  animation: uxqa-compact-in 120ms cubic-bezier(.22, 1, .36, 1) both;
+}
+.uxqa-compact-option { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 36px; align-items: center; gap: 14px; padding: 7px 9px; border: 0; border-radius: 8px; background: transparent; color: var(--uxqa-control-color, #17202a); font: 600 12px/1.2 ui-sans-serif, system-ui, sans-serif; text-align: left; cursor: pointer; }
+.uxqa-compact-option:hover, .uxqa-compact-option:focus-visible, .uxqa-compact-option[aria-selected="true"] { background: color-mix(in srgb, var(--uxqa-control-color, #17202a) 9%, transparent); }
+.uxqa-compact-option > span { color: color-mix(in srgb, var(--uxqa-control-color, #17202a) 56%, transparent); font-size: 10px; font-variant-numeric: tabular-nums; }
+.uxqa-compact-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@keyframes uxqa-compact-in { from { opacity: 0; transform: translateY(4px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .uxqa-control {
   display: grid;
   gap: 6px;
@@ -193,8 +273,8 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: 192px;
-  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%) 72%, rgb(0 0 0 / 88%));
+  height: 112px;
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 62%) 60%, rgb(0 0 0 / 88%));
   content: "";
   transition: height 420ms cubic-bezier(.22, 1, .36, 1);
 }
@@ -242,6 +322,11 @@
 .uxqa-status--error { color: #9f1c1c; }
 @media (prefers-reduced-motion: reduce) {
   .uxqa-content,
+  .uxqa-compact-launcher,
+  .uxqa-compact-pill,
+  .uxqa-compact-trigger,
+  .uxqa-compact-chrome,
+  .uxqa-compact-menu,
   .uxqa-screen[data-browser-appearance="ios26-safari"]::before,
   .uxqa-ios26-safari,
   .uxqa-ios26-side,

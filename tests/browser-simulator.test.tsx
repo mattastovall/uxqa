@@ -39,6 +39,26 @@ describe("BrowserSimulator", () => {
     expect(screen.queryByTitle("Website preview")).not.toBeInTheDocument();
   });
 
+  it("supports opt-in compact controls without changing the native default", () => {
+    const { container } = render(<BrowserSimulator src="/" controlVariant="compact" />);
+
+    expect(screen.queryByLabelText("Device")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Open preview controls" }));
+    fireEvent.click(screen.getByRole("button", { name: "Device: iPhone 16" }));
+    fireEvent.click(screen.getByRole("option", { name: /iPhone SE/ }));
+    expect(screen.getByRole("button", { name: "Device: iPhone SE" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Browser: Safari" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Browser: Safari" }));
+    fireEvent.click(screen.getByRole("option", { name: "Safari (Legacy)" }));
+    expect(container.querySelector(".uxqa-browser-chrome")).toHaveAttribute("data-appearance", "ios-safari-old");
+
+    fireEvent.click(screen.getByRole("button", { name: "Hide browser chrome" }));
+    expect(container.querySelector(".uxqa-browser-chrome")).not.toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("button", { name: "Device: iPhone SE" })).not.toBeInTheDocument();
+  });
+
   it("updates uncontrolled selection and reports controlled changes", () => {
     const { rerender } = render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "pixel", browserId: "chrome", chrome: "auto" }} />);
     fireEvent.change(screen.getByLabelText("Device"), { target: { value: "iphone-se" } });

@@ -322,11 +322,11 @@ export function App() {
             </div>
           </div>
           <div
-            className="hero-demo min-w-0 self-center border border-line bg-panel p-3.5 shadow-[0_30px_90px_rgb(0_0_0_/_45%)] max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center max-sm:p-2.5 max-sm:shadow-[0_16px_48px_rgb(0_0_0_/_35%)] [grid-area:demo]"
+            className="hero-demo min-w-0 self-center bg-[#050505] max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
             aria-label="Interactive uxqa demo"
           >
             <div className="simulator-shell h-[min(680px,72vh)] min-h-[520px] max-sm:h-[min(560px,62vh)] max-sm:min-h-0 max-[380px]:h-[min(500px,58vh)]">
-              <BrowserSimulator content={<PreviewPage />} hostname="north.example" />
+              <BrowserSimulator content={<PreviewPage />} hostname="north.example" controlVariant="compact" />
             </div>
           </div>
           <GettingStartedCarousel />
