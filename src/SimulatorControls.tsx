@@ -85,6 +85,11 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
   const showChrome = visibility.chrome ?? true;
   const actions = selectionActions({ selection, devices, browsers, onSelectionChange });
 
+  const collapseCompactControls = () => {
+    setMenu(null);
+    setExpanded(false);
+  };
+
   useEffect(() => {
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (!(event.target instanceof Node) || !rootRef.current?.contains(event.target)) setMenu(null);
@@ -113,7 +118,7 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
   };
 
   return (
-    <div ref={rootRef} className="uxqa-compact-controls">
+    <div ref={rootRef} className="uxqa-compact-controls" onMouseEnter={() => setExpanded(true)} onMouseLeave={collapseCompactControls}>
       {expanded ? (
         <div className="uxqa-compact-pill">
           {showDevice ? <div className="uxqa-compact-anchor"><button type="button" className="uxqa-compact-trigger" aria-label={`Device: ${devices.find((device) => device.id === selection.deviceId)?.label ?? selection.deviceId}`} aria-expanded={menu === "device"} aria-controls={deviceMenuId} aria-haspopup="listbox" onClick={() => setMenu((current) => current === "device" ? null : "device")}>{devices.find((device) => device.id === selection.deviceId)?.label}<span aria-hidden="true">▾</span></button>{menu === "device" ? <div id={deviceMenuId} className="uxqa-compact-menu" role="listbox" aria-label="Device options" onKeyDown={moveOptionFocus}>{devices.map((device) => <button key={device.id} type="button" role="option" aria-selected={device.id === selection.deviceId} className="uxqa-compact-option" onClick={() => { actions.selectDevice(device.id); setMenu(null); }}>{device.label}<span>{device.screen.width} × {device.screen.height}</span></button>)}</div> : null}</div> : null}

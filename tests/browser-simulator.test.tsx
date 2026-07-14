@@ -59,6 +59,19 @@ describe("BrowserSimulator", () => {
     expect(screen.queryByRole("button", { name: "Device: iPhone SE" })).not.toBeInTheDocument();
   });
 
+  it("expands compact controls while hovered", () => {
+    const { container } = render(<BrowserSimulator src="/" controlVariant="compact" />);
+    const controls = container.querySelector(".uxqa-compact-controls");
+    expect(controls).not.toBeNull();
+    if (!controls) return;
+
+    fireEvent.mouseEnter(controls);
+    expect(screen.getByRole("button", { name: "Device: iPhone 16" })).toBeInTheDocument();
+
+    fireEvent.mouseLeave(controls);
+    expect(screen.queryByRole("button", { name: "Device: iPhone 16" })).not.toBeInTheDocument();
+  });
+
   it("updates uncontrolled selection and reports controlled changes", () => {
     const { rerender } = render(<BrowserSimulator src="/" defaultSelection={{ deviceId: "pixel", browserId: "chrome", chrome: "auto" }} />);
     fireEvent.change(screen.getByLabelText("Device"), { target: { value: "iphone-se" } });
