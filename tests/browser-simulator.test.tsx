@@ -60,16 +60,24 @@ describe("BrowserSimulator", () => {
   });
 
   it("expands compact controls while hovered", () => {
+    vi.useFakeTimers();
     const { container } = render(<BrowserSimulator src="/" controlVariant="compact" />);
     const controls = container.querySelector(".uxqa-compact-controls");
     expect(controls).not.toBeNull();
     if (!controls) return;
 
     fireEvent.mouseEnter(controls);
+    act(() => {
+      vi.advanceTimersByTime(180);
+    });
     expect(screen.getByRole("button", { name: "Device: iPhone 16" })).toBeInTheDocument();
 
     fireEvent.mouseLeave(controls);
+    act(() => {
+      vi.advanceTimersByTime(120);
+    });
     expect(screen.queryByRole("button", { name: "Device: iPhone 16" })).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("updates uncontrolled selection and reports controlled changes", () => {

@@ -78,6 +78,7 @@
 }
 
 .hero-demo .uxqa-simulator {
+  padding: 24px;
   --uxqa-control-color: #f3f3ef;
   --uxqa-control-background: #171719;
   --uxqa-control-accent: #e8e8e4;

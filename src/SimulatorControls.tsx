@@ -71,12 +71,16 @@ function NativeSimulatorControls({ selection, devices, browsers, onSelectionChan
 }
 
 type CompactMenu = "device" | "browser" | null;
+const COMPACT_EXPAND_DELAY_MS = 180;
+const COMPACT_COLLAPSE_DELAY_MS = 120;
 
 function CompactSimulatorControls({ selection, devices, browsers, onSelectionChange, visibility = {} }: Omit<SimulatorControlsProps, "variant">) {
   const [expanded, setExpanded] = useState(false);
   const [menu, setMenu] = useState<CompactMenu>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const expandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const deviceMenuId = useId();
   const browserMenuId = useId();
   const compatible = browsers.filter((browser) => browser.deviceId === selection.deviceId);
@@ -85,9 +89,44 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
   const showChrome = visibility.chrome ?? true;
   const actions = selectionActions({ selection, devices, browsers, onSelectionChange });
 
+  const clearExpandTimer = () => {
+    if (expandTimerRef.current) {
+      clearTimeout(expandTimerRef.current);
+      expandTimerRef.current = null;
+    }
+  };
+
+  const clearCollapseTimer = () => {
+    if (collapseTimerRef.current) {
+      clearTimeout(collapseTimerRef.current);
+      collapseTimerRef.current = null;
+    }
+  };
+
   const collapseCompactControls = () => {
+    clearExpandTimer();
+    clearCollapseTimer();
     setMenu(null);
     setExpanded(false);
+  };
+
+  const scheduleExpand = () => {
+    clearCollapseTimer();
+    if (expanded) return;
+    clearExpandTimer();
+    expandTimerRef.current = setTimeout(() => setExpanded(true), COMPACT_EXPAND_DELAY_MS);
+  };
+
+  const scheduleCollapse = () => {
+    clearExpandTimer();
+    clearCollapseTimer();
+    collapseTimerRef.current = setTimeout(collapseCompactControls, COMPACT_COLLAPSE_DELAY_MS);
+  };
+
+  const expandCompactControls = () => {
+    clearExpandTimer();
+    clearCollapseTimer();
+    setExpanded(true);
   };
 
   useEffect(() => {
@@ -96,8 +135,7 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
     };
     const closeOnEscape = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      setMenu(null);
-      setExpanded(false);
+      collapseCompactControls();
       launcherRef.current?.focus();
     };
     document.addEventListener("pointerdown", closeOnOutsidePointer);
@@ -105,6 +143,8 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
     return () => {
       document.removeEventListener("pointerdown", closeOnOutsidePointer);
       document.removeEventListener("keydown", closeOnEscape);
+      clearExpandTimer();
+      clearCollapseTimer();
     };
   }, []);
 
@@ -118,7 +158,7 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
   };
 
   return (
-    <div ref={rootRef} className="uxqa-compact-controls" onMouseEnter={() => setExpanded(true)} onMouseLeave={collapseCompactControls}>
+    <div ref={rootRef} className="uxqa-compact-controls" onMouseEnter={scheduleExpand} onMouseLeave={scheduleCollapse}>
       {expanded ? (
         <div className="uxqa-compact-pill">
           {showDevice ? <div className="uxqa-compact-anchor"><button type="button" className="uxqa-compact-trigger" aria-label={`Device: ${devices.find((device) => device.id === selection.deviceId)?.label ?? selection.deviceId}`} aria-expanded={menu === "device"} aria-controls={deviceMenuId} aria-haspopup="listbox" onClick={() => setMenu((current) => current === "device" ? null : "device")}>{devices.find((device) => device.id === selection.deviceId)?.label}<span aria-hidden="true">▾</span></button>{menu === "device" ? <div id={deviceMenuId} className="uxqa-compact-menu" role="listbox" aria-label="Device options" onKeyDown={moveOptionFocus}>{devices.map((device) => <button key={device.id} type="button" role="option" aria-selected={device.id === selection.deviceId} className="uxqa-compact-option" onClick={() => { actions.selectDevice(device.id); setMenu(null); }}>{device.label}<span>{device.screen.width} × {device.screen.height}</span></button>)}</div> : null}</div> : null}
@@ -126,7 +166,7 @@ function CompactSimulatorControls({ selection, devices, browsers, onSelectionCha
           {showChrome ? <button type="button" className="uxqa-compact-chrome" aria-label={selection.chrome === "off" ? "Show browser chrome" : "Hide browser chrome"} aria-pressed={selection.chrome !== "off"} onClick={actions.toggleChrome}><span aria-hidden="true" />Chrome</button> : null}
           <span className="uxqa-compact-status" aria-live="polite">{`${devices.find((device) => device.id === selection.deviceId)?.label ?? selection.deviceId}, ${compatible.find((browser) => browser.browserId === selection.browserId)?.label ?? selection.browserId}, browser chrome ${selection.chrome === "off" ? "off" : "on"}`}</span>
         </div>
-      ) : <button ref={launcherRef} type="button" className="uxqa-compact-launcher" aria-label="Open preview controls" onClick={() => setExpanded(true)}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 3.5 18 12l-6.15 1.15L8.5 19.5 5.5 3.5Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" /></svg></button>}
+      ) : <button ref={launcherRef} type="button" className="uxqa-compact-launcher" aria-label="Open preview controls" onClick={expandCompactControls}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 3.5 18 12l-6.15 1.15L8.5 19.5 5.5 3.5Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" /></svg></button>}
     </div>
   );
 }

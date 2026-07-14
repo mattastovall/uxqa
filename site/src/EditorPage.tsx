@@ -120,7 +120,7 @@ export function EditorPage() {
         <section className={`${shell} grid gap-x-[clamp(48px,7vw,112px)] gap-y-12 py-[clamp(64px,9vw,126px)] lg:grid-cols-[minmax(340px,.72fr)_minmax(0,1.28fr)]`} id="top">
           <div className="self-center">
             <p className="mb-5 font-mono text-xs tracking-[0.1em] text-faint uppercase">uxqa-editor</p>
-            <h1 className="m-0 max-w-[9ch] text-[clamp(3.7rem,7vw,7.8rem)] font-medium leading-[0.98] tracking-[-0.075em] text-balance max-sm:text-[clamp(3rem,15vw,4.8rem)] max-sm:leading-none">
+            <h1 className="m-0 max-w-[9ch] text-[clamp(2.9rem,5.5vw,6rem)] font-medium leading-[0.98] tracking-[-0.075em] text-balance max-sm:text-[clamp(2.4rem,12vw,3.8rem)] max-sm:leading-none">
               Edit the page in the page.
             </h1>
             <p className="my-8 max-w-[570px] text-[clamp(1rem,1.35vw,1.2rem)] text-muted max-sm:my-6">
@@ -168,9 +168,9 @@ export function EditorPage() {
           </ol>
         </section>
 
-        <section className={`${shell} border-t border-line py-[clamp(78px,10vw,140px)]`} id="demo">
+        <section className={`${shell} py-[clamp(78px,10vw,140px)]`} id="demo">
           <div className="mb-12 max-w-[740px]">
-            <h2 className="m-0 text-[clamp(2.8rem,5.6vw,6rem)] font-medium leading-[0.94] tracking-[-0.065em] text-balance">
+            <h2 className="m-0 text-[clamp(2.4rem,4.8vw,5rem)] font-medium leading-[0.94] tracking-[-0.065em] text-balance">
               Adjust layout without leaving the browser.
             </h2>
             <p className="mt-7 mb-0 max-w-[620px] text-[clamp(1rem,1.3vw,1.18rem)] text-muted">

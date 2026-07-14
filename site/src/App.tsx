@@ -238,7 +238,7 @@ function GettingStartedCarousel() {
   const next = () => setIndex((value) => (value === startSteps.length - 1 ? 0 : value + 1));
 
   return (
-    <div className="mt-2 min-w-0 scroll-mt-6 max-lg:mt-0 [grid-area:start]" id="start">
+    <div className="mt-2 min-w-0 scroll-mt-6 max-lg:mt-0 lg:self-end [grid-area:start]" id="start">
       <p className="mb-3 font-mono text-xs tracking-[0.08em] text-faint uppercase">Getting started</p>
       <div className="border border-line bg-panel">
         <div className="flex items-stretch justify-between gap-3 border-b border-line max-sm:flex-col max-sm:items-stretch">
@@ -302,14 +302,17 @@ export function App() {
 
       <main id="main">
         <section
-          className={`${shell} grid min-h-[calc(100vh-77px)] grid-cols-1 items-start gap-8 py-[68px] pb-[86px] max-lg:min-h-0 max-sm:gap-7 max-sm:py-10 max-sm:pb-14 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:gap-x-[clamp(40px,7vw,100px)] lg:gap-y-[clamp(24px,5vw,48px)] lg:[grid-template-areas:'copy_demo'_'start_demo']`}
+          className={`${shell} grid max-lg:min-h-[calc(100vh-77px)] grid-cols-1 items-start gap-8 py-12 pb-16 max-sm:gap-7 max-sm:py-10 max-sm:pb-14 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-[clamp(40px,7vw,100px)] lg:gap-y-[clamp(16px,3vw,32px)] lg:py-14 lg:pb-16 lg:[grid-template-areas:'copy_demo'_'start_demo']`}
           id="top"
         >
           <div className="min-w-0 [grid-area:copy]">
-            <h1 className="m-0 max-w-[760px] text-[clamp(3.6rem,6.6vw,7.4rem)] font-medium leading-[0.92] tracking-[-0.075em] text-balance max-sm:text-[clamp(2.75rem,14vw,4.5rem)] max-sm:leading-[0.95] max-[380px]:text-[clamp(2.4rem,13vw,3.2rem)]">
+            <p className="mb-4 font-mono text-xs tracking-[0.08em] text-faint uppercase max-sm:mb-3 max-sm:text-[0.7rem]">
+              User Experience Quality Assurance
+            </p>
+            <h1 className="m-0 max-w-[760px] text-[clamp(2.5rem,4.8vw,5rem)] font-medium leading-[0.94] tracking-[-0.07em] text-balance max-sm:text-[clamp(2rem,11vw,3.2rem)] max-sm:leading-[0.96] max-[380px]:text-[clamp(1.85rem,10vw,2.5rem)]">
               See the page your users see.
             </h1>
-            <p className="my-[30px] max-w-[610px] text-[clamp(1rem,1.35vw,1.2rem)] text-muted max-sm:my-5 max-sm:text-base">
+            <p className="my-6 max-w-[610px] text-[clamp(1rem,1.35vw,1.2rem)] text-muted max-sm:my-5 max-sm:text-base">
               Put your React UI inside calibrated device and browser chrome. Review responsive work with the context that screenshots leave out.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -322,7 +325,7 @@ export function App() {
             </div>
           </div>
           <div
-            className="hero-demo min-w-0 self-center bg-[#050505] max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
+            className="hero-demo min-w-0 self-start bg-[#050505] max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
             aria-label="Interactive uxqa demo"
           >
             <div className="simulator-shell h-[min(680px,72vh)] min-h-[520px] max-sm:h-[min(560px,62vh)] max-sm:min-h-0 max-[380px]:h-[min(500px,58vh)]">
