@@ -39,11 +39,11 @@ function PreviewPage() {
             "radial-gradient(ellipse 80% 60% at 100% 0%, #dfe8e2 0%, transparent 55%), linear-gradient(180deg, #f5f5f2 0%, #ecece6 100%)",
         }}
       >
-        <p className="mb-2.5 font-mono text-[10px] font-medium tracking-[0.1em] text-muted uppercase">Field notes</p>
+        <p className="mb-2.5 font-mono text-[10px] font-medium tracking-[0.1em] text-preview-muted uppercase">Field notes</p>
         <h2 className="mb-3 max-w-[14ch] text-[clamp(28px,7vw,36px)] font-medium leading-[1.12] tracking-[-0.03em]">
           Routes beyond the last stop.
         </h2>
-        <p className="mb-[22px] max-w-[30ch] text-sm leading-normal text-dim">Day trips reachable by train — no car needed.</p>
+        <p className="mb-[22px] max-w-[30ch] text-sm leading-normal text-preview-muted">Day trips reachable by train — no car needed.</p>
         <button
           type="button"
           className="w-fit cursor-pointer border border-preview-ink bg-preview-ink px-[18px] py-3 font-mono text-[11px] font-medium tracking-[0.06em] text-preview uppercase hover:bg-[#333]"
@@ -73,13 +73,13 @@ function PreviewPage() {
 
       <section className="px-5 py-7" aria-label="Suggested routes">
         <div>
-          <p className="mb-2.5 font-mono text-[10px] font-medium tracking-[0.1em] text-muted uppercase">Suggested</p>
+          <p className="mb-2.5 font-mono text-[10px] font-medium tracking-[0.1em] text-preview-muted uppercase">Suggested</p>
           <h3 className="mb-[18px] text-xl font-medium tracking-[-0.03em]">Four easy exits</h3>
         </div>
         <ul className="m-0 list-none border-t border-preview-line p-0">
           {previewRoutes.map((route) => (
             <li key={route.code} className="grid grid-cols-[36px_1fr_auto] items-center gap-3 border-b border-preview-line py-3.5">
-              <span className="font-mono text-[11px] font-medium text-muted">{route.code}</span>
+              <span className="font-mono text-[11px] font-medium text-preview-muted">{route.code}</span>
               <div>
                 <strong className="block text-[15px] font-semibold tracking-[-0.02em]">{route.name}</strong>
                 <span className="text-xs text-preview-muted">{route.note}</span>
@@ -140,7 +140,7 @@ function PreviewPage() {
         <span className="font-mono text-[11px] font-medium tracking-[0.08em] text-muted uppercase">— north/ field guide</span>
       </section>
 
-      <footer className="flex justify-between border-t border-preview-line px-5 pt-3.5 pb-7 font-mono text-[10px] font-medium tracking-[0.06em] text-muted uppercase">
+      <footer className="flex justify-between border-t border-preview-line px-5 pt-3.5 pb-7 font-mono text-[10px] font-medium tracking-[0.06em] text-preview-muted uppercase">
         <span>42.3601° N</span>
         <span>End of line</span>
       </footer>
@@ -215,7 +215,11 @@ function CopyBlock({ label, code, compact }: Readonly<{ label: string; code: str
 
 function SectionHead({ title, children }: Readonly<{ title: string; children?: ReactNode }>) {
   return (
-    <div className="mb-[58px] grid grid-cols-1 gap-8 max-sm:mb-8 lg:grid-cols-2 lg:gap-[clamp(32px,5vw,80px)]">
+    <div
+      className={`mb-[58px] grid grid-cols-1 gap-8 max-sm:mb-8 ${
+        children ? "lg:grid-cols-2 lg:gap-[clamp(32px,5vw,80px)]" : "lg:max-w-[60%]"
+      }`}
+    >
       <h2 className="m-0 text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[0.98] tracking-[-0.06em] text-balance max-sm:mb-4 max-sm:text-[clamp(2rem,10vw,3rem)]">
         {title}
       </h2>
@@ -238,7 +242,7 @@ function GettingStartedCarousel() {
   const next = () => setIndex((value) => (value === startSteps.length - 1 ? 0 : value + 1));
 
   return (
-    <div className="mt-2 min-w-0 scroll-mt-6 max-lg:mt-0 lg:self-end [grid-area:start]" id="start">
+    <div className="mt-2 min-w-0 scroll-mt-6 max-lg:mt-0 lg:self-end lg:[grid-area:start]" id="start">
       <p className="mb-3 font-mono text-xs tracking-[0.08em] text-faint uppercase">Getting started</p>
       <div className="border border-line bg-panel">
         <div className="flex items-stretch justify-between gap-3 border-b border-line max-sm:flex-col max-sm:items-stretch">
@@ -291,7 +295,7 @@ export function App() {
           <span>ux</span>qa<span className="text-white">.</span>
         </a>
         <nav className="flex gap-8 max-sm:gap-5 max-[380px]:gap-3.5" aria-label="Main navigation">
-          <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#start">What</a>
+          <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#start">Start</a>
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="./uxqa-editor/">Editor</a>
           <a className="font-mono text-[0.78rem] font-medium tracking-[0.08em] text-muted no-underline uppercase hover:text-white max-sm:text-[0.7rem]" href="#faq">FAQ</a>
         </nav>
@@ -305,7 +309,7 @@ export function App() {
           className={`${shell} grid max-lg:min-h-[calc(100vh-77px)] grid-cols-1 items-start gap-8 py-12 pb-16 max-sm:gap-7 max-sm:py-10 max-sm:pb-14 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-[clamp(40px,7vw,100px)] lg:gap-y-[clamp(16px,3vw,32px)] lg:py-14 lg:pb-16 lg:[grid-template-areas:'copy_demo'_'start_demo']`}
           id="top"
         >
-          <div className="min-w-0 [grid-area:copy]">
+          <div className="min-w-0 lg:[grid-area:copy]">
             <p className="mb-4 font-mono text-xs tracking-[0.08em] text-faint uppercase max-sm:mb-3 max-sm:text-[0.7rem]">
               User Experience Quality Assurance
             </p>
@@ -322,20 +326,29 @@ export function App() {
               >
                 View on GitHub <span aria-hidden="true">↗</span>
               </a>
+              <a
+                className="inline-flex min-h-12 items-center justify-center border border-edge bg-transparent px-5 font-mono text-[0.78rem] font-medium tracking-[0.06em] text-muted no-underline uppercase transition-[transform,color,border-color] duration-[160ms] hover:-translate-y-0.5 hover:border-muted hover:text-white max-sm:w-full"
+                href="./uxqa-editor/"
+              >
+                Try the editor
+              </a>
             </div>
           </div>
           <div
-            className="hero-demo min-w-0 self-start max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center [grid-area:demo]"
+            className="hero-demo min-w-0 self-start max-lg:w-full max-lg:max-w-[720px] max-lg:justify-self-center lg:[grid-area:demo]"
             aria-label="Interactive uxqa demo"
           >
             <div className="simulator-shell h-[min(680px,72vh)] min-h-[520px] max-sm:h-[min(560px,62vh)] max-sm:min-h-0 max-[380px]:h-[min(500px,58vh)]">
               <BrowserSimulator content={<PreviewPage />} hostname="north.example" controlVariant="compact" />
             </div>
+            <p className="m-0 pt-4 text-center font-mono text-[0.68rem] tracking-[0.1em] text-faint uppercase">
+              Live preview — click play for the device controls
+            </p>
           </div>
           <GettingStartedCarousel />
         </section>
 
-        <section className={`${shell} border-t border-line py-[clamp(86px,11vw,150px)] max-sm:py-14`} id="faq">
+        <section className={`${shell} border-t border-line py-[clamp(64px,8vw,110px)] max-sm:py-14`} id="faq">
           <SectionHead title="What uxqa is, and isn't." />
           <div className="border-t border-line">
             {[
@@ -357,7 +370,7 @@ export function App() {
               },
             ].map((item) => (
               <details key={item.q} className="group border-b border-line">
-                <summary className="cursor-pointer list-none py-[25px] pr-[42px] text-[1.15rem] text-balance after:float-right after:font-mono after:text-[1.4rem] after:text-muted after:content-['+'] group-open:after:content-['−'] max-sm:py-5 max-sm:pr-9 max-sm:text-base">
+                <summary className="cursor-pointer list-none py-[25px] pr-[42px] text-[1.15rem] text-balance transition-colors duration-[160ms] after:float-right after:font-mono after:text-[1.4rem] after:text-muted after:transition-colors after:duration-[160ms] after:content-['+'] hover:text-white hover:after:text-white group-open:after:content-['−'] max-sm:py-5 max-sm:pr-9 max-sm:text-base">
                   {item.q}
                 </summary>
                 <p className="-mt-1.5 mb-[26px] max-w-[720px] text-muted max-sm:mb-5 max-sm:text-[0.95rem]">{item.a}</p>
